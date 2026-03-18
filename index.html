@@ -180,6 +180,7 @@ Final portfolio documenting the design, implementation, and testing of an autono
 <a href="#design">Design</a>
 <a href="#implementation">Implementation</a>
 <a href="#code">Code Architecture</a>
+<a href="#docs">Detailed Docs</a>
 <a href="#results">Results</a>
 <a href="#media">Media</a>
 <a href="#video">Video</a>
@@ -565,6 +566,47 @@ The overall flow of the code is straightforward once the roles of the files are 
 <p>
 What I like most about this organization is that it mirrors how the robot itself works. The robot is not one single behavior. It is a collection of interacting subsystems, each with its own job, and the code structure reflects that clearly. That ended up making the project much easier to understand and much easier to present as a final portfolio.
 </p>
+
+</div>
+</section>
+
+<section id="docs">
+<h2>Detailed Code Documentation</h2>
+<div class="card">
+
+<p>
+In addition to the high-level software discussion above, separate documentation pages were created for the major source files in the project. These pages explain the purpose of each file, the classes or tasks defined inside it, the shares and queues it uses, and how it connects to the rest of the system.
+</p>
+
+<p>
+This makes the portfolio easier to navigate and gives a more complete picture of how the codebase is organized.
+</p>
+
+<h3>Main and Task Files</h3>
+<div class="file-links">
+<a href="pages/main_py.html" target="_blank">main.py</a>
+<a href="pages/task_motor_py.html" target="_blank">task_motor.py</a>
+<a href="pages/task_line_py.html" target="_blank">task_line.py</a>
+<a href="pages/task_imu_py.html" target="_blank">task_imu.py</a>
+<a href="pages/task_observer_py.html" target="_blank">task_observer.py</a>
+<a href="pages/task_bump_py.html" target="_blank">task_bump.py</a>
+<a href="pages/task_user_py.html" target="_blank">task_user.py</a>
+<a href="pages/task_log_est_py.html" target="_blank">task_log_est.py</a>
+<a href="pages/task_garbage_py.html" target="_blank">task_garbage.py</a>
+</div>
+
+<h3>Driver and Support Files</h3>
+<div class="file-links">
+<a href="pages/line_sensor_py.html" target="_blank">line_sensor.py</a>
+<a href="pages/motor_driver_py.html" target="_blank">motor_driver.py</a>
+<a href="pages/encoder_py.html" target="_blank">encoder.py</a>
+<a href="pages/driver_py.html" target="_blank">driver.py</a>
+<a href="pages/task_share_py.html" target="_blank">task_share.py</a>
+<a href="pages/cotask_py.html" target="_blank">cotask.py</a>
+<a href="pages/observer_matrices_py.html" target="_blank">observer_matrices.py</a>
+<a href="pages/make_observer_matrices_py.html" target="_blank">make_observer_matrices.py</a>
+<a href="pages/boot_py.html" target="_blank">boot.py</a>
+</div>
 
 </div>
 </section>
