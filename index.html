@@ -3,16 +3,16 @@
 
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Romi Robot Project</title>
 
 <style>
-
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
 background:#f4f6f8;
 color:#333;
-line-height:1.6;
+line-height:1.7;
 }
 
 header{
@@ -29,13 +29,18 @@ margin-bottom:10px;
 
 header p{
 font-size:18px;
-opacity:0.8;
+opacity:0.9;
+max-width:900px;
+margin:auto;
 }
 
 nav{
 background:#111;
 padding:12px;
 text-align:center;
+position:sticky;
+top:0;
+z-index:1000;
 }
 
 nav a{
@@ -50,7 +55,7 @@ color:#4da3ff;
 }
 
 .container{
-max-width:1000px;
+max-width:1100px;
 margin:auto;
 padding:40px 20px;
 }
@@ -73,25 +78,61 @@ border-radius:8px;
 box-shadow:0 2px 10px rgba(0,0,0,0.08);
 }
 
+.card h3{
+margin-top:25px;
+color:#1f2933;
+}
+
+.card h4{
+margin-top:18px;
+margin-bottom:8px;
+color:#1f2933;
+}
+
+ul{
+padding-left:22px;
+}
+
+.code-link{
+display:inline-block;
+margin:8px 10px 8px 0;
+padding:10px 14px;
+background:#e8f1ff;
+border-radius:6px;
+text-decoration:none;
+color:#1f2933;
+font-weight:bold;
+}
+
+.code-link:hover{
+background:#d4e7ff;
+}
+
+.figure-placeholder{
+margin:18px 0;
+padding:18px;
+background:#eef2f5;
+border-left:4px solid #4da3ff;
+border-radius:6px;
+}
+
 footer{
 background:#1f2933;
 color:white;
 text-align:center;
 padding:20px;
 }
-
 </style>
 </head>
 
-
 <body>
 
-
 <header>
-<h1>Romi Robot Project</h1>
-<p>Project Portfolio and Documentation</p>
+<h1>Autonomous Romi Robot Project</h1>
+<p>
+Final portfolio documenting the design, implementation, testing, and performance of an autonomous Romi robot developed to complete a multi-stage obstacle course using line sensors, encoders, bump switches, and inertial sensing.
+</p>
 </header>
-
 
 <nav>
 <a href="#overview">Overview</a>
@@ -103,111 +144,338 @@ padding:20px;
 <a href="#repository">Repository</a>
 </nav>
 
-
 <div class="container">
-
 
 <section id="overview">
 <h2>Project Overview</h2>
 <div class="card">
 
 <p>
-This project documents the design and implementation of a Romi robot capable of autonomously navigating and completing an obstacle course. 
-The goal of the project was to integrate mechanical design, electrical components, and software control to create a reliable system capable of performing tasks without manual intervention.
+This project documents the design and implementation of an autonomous Romi robot capable of navigating and completing a structured obstacle course without manual intervention. The project required the integration of mechanical design, electrical hardware, embedded programming, and real-time control. The final system was designed to follow a printed line, execute controlled turns, detect a wall using bump sensors, back away from the obstacle, reorient itself, and continue through the course.
 </p>
 
 <p>
-The Romi robot was programmed using Python and incorporates several onboard sensors and control mechanisms to navigate the course. 
-Key tools used by the robot include wheel encoders for tracking movement and distance, a line sensor for detecting and following lines on the course, and bump sensors for obstacle detection and collision response.
+The Romi robot was programmed in Python using a cooperative multitasking structure. The system relied on multiple onboard sensors and feedback devices to make decisions and regulate motion. These included a reflectance sensor array for line detection, wheel encoders for measuring distance and wheel motion, snap-action bump switches for wall detection, and an inertial measurement unit (IMU) for monitoring heading and rotational motion. By combining these subsystems, the robot was able to transition between distinct operating modes and complete a sequence of behaviors required by the obstacle course.
 </p>
 
 <p>
-This portfolio provides a detailed overview of the project, including the mechanical and electrical design of the robot, the software architecture used to control it, and the analysis of its performance. 
-Supporting materials such as code documentation, diagrams, photos, and a demonstration video are also included so that the system could be reproduced or further developed by others.
+A major objective of the project was not only to make the robot function once, but to make it function in a way that was repeatable and robust. The challenge was therefore not limited to basic navigation. It also included tuning the control response, improving consistency, debugging memory and logic issues on the microcontroller, and making design choices that balanced speed with reliability.
 </p>
+
+<h3>Project Goals</h3>
+<ul>
+<li>Follow a line using reflectance-based sensing</li>
+<li>Use feedback from wheel encoders to improve motion accuracy</li>
+<li>Detect contact with a wall using mechanical bump switches</li>
+<li>Back up and reorient after obstacle contact</li>
+<li>Resume line following after the recovery maneuver</li>
+<li>Demonstrate repeatable behavior over multiple trials</li>
+</ul>
+
+<h3>Course Behavior Summary</h3>
+<p>
+At a high level, the robot begins by line following along the course. After reaching a particular section, it transitions from line following into a maneuvering mode, performs a controlled right turn, drives forward into a wall, detects the collision using front-mounted bump switches, reverses, executes a left turn, and then resumes line following. This required both continuous control during line following and event-driven behavior during obstacle interaction.
+</p>
+
 </div>
 </section>
-
 
 <section id="design">
-<h2>Mechanical & Electrical Design</h2>
+<h2>Mechanical &amp; Electrical Design</h2>
 <div class="card">
 
+<h3>Mechanical Design Overview</h3>
 <p>
-Explain hardware design, sensors, mounts, and wiring diagrams here.
+The robot was built on the Romi differential-drive chassis. This platform was selected because it provides a compact and stable mechanical base with two independently driven wheels, allowing the robot to perform both straight-line motion and turning through differential wheel speeds. The chassis layout also makes it straightforward to mount sensors underneath and at the front of the robot, which was especially useful for this obstacle course.
 </p>
+
+<p>
+The mechanical design focused primarily on sensor placement and practical integration rather than extensive custom fabrication. Since the obstacle course depended heavily on early line detection and reliable wall contact detection, the position and orientation of the sensors were important design decisions.
+</p>
+
+<h3>Line Sensor Array</h3>
+<p>
+The primary line-detection sensor was the <b>Pololu QTR-8A reflectance sensor array</b>. This sensor array uses eight infrared emitter-phototransistor pairs to measure surface reflectivity at multiple points across the width of the robot. The array was mounted on the underside of the robot and positioned slightly forward of the wheel axis. This placement was intentional: by sensing the line ahead of the robot’s center of rotation, the controller could begin correcting sooner, reducing overshoot and improving responsiveness during curves and transitions.
+</p>
+
+<p>
+Because the QTR-8A is an analog sensor array, it provided more than simple yes/no line detection. Each of the eight sensors produced a reflectance-based reading, allowing the software to estimate where the line was located under the array. This allowed the use of a weighted-average line position algorithm rather than a simple threshold trigger, leading to smoother steering corrections.
+</p>
+
+<p>
+The mounting height of the sensor array was also important. Reflectance sensors are sensitive to distance from the ground, so maintaining a consistent spacing between the sensor face and the track surface helped improve measurement consistency. This was one reason the mechanical mounting needed to be stable and rigid.
+</p>
+
+<h3>Bump Sensors</h3>
+<p>
+Obstacle detection was implemented using <b>Pololu snap-action switches with 18.5 mm bump levers</b>. These switches were mounted at the front of the robot to detect physical contact with the wall during the obstacle portion of the course. The lever arms increased the effective sensing range and made the switches more tolerant of slight angular misalignment when the robot approached the wall.
+</p>
+
+<p>
+The use of mechanical bump switches was a simple but robust design choice. Unlike optical or ultrasonic ranging sensors, the bump switches gave an unambiguous binary indication of wall contact. This made them well suited for the specific behavior required in the course, where the robot was expected to drive until impact and then immediately transition into a recovery maneuver.
+</p>
+
+<h3>IMU Integration</h3>
+<p>
+An inertial measurement unit (IMU) was also incorporated into the robot. The IMU was mounted near the center of the chassis in order to reduce the influence of vibration and rotational acceleration that would be more pronounced farther from the center of rotation. The IMU provided angular velocity and orientation information, which could be used to monitor heading changes and support state estimation.
+</p>
+
+<p>
+Although line following and encoder feedback formed the core of the navigation strategy, the IMU added another layer of sensing that could be used to evaluate turning behavior and rotational motion. This was especially valuable when diagnosing motion consistency and understanding how the robot responded dynamically during turns.
+</p>
+
+<h3>Electrical Design Overview</h3>
+<p>
+The electrical system centered around the STM32 microcontroller board used in the course. This controller interfaced with the motors, encoders, line sensor array, bump sensors, and IMU. PWM signals were used to drive the motors, while encoder signals provided rotational feedback. The line sensor array supplied analog reflectance readings, the bump switches acted as digital contact sensors, and the IMU communicated orientation-related data.
+</p>
+
+<p>
+The electrical design needed to support reliable signal acquisition while also maintaining clean and organized wiring. Because the robot includes several sensors and moving components, cable management and secure electrical connections were important for consistent operation. A wiring diagram was included in the repository so that the system could be reconstructed by another team or future student.
+</p>
+
+<h3>Design Tradeoffs</h3>
+<ul>
+<li>Forward placement of the line sensors improved anticipation of line changes but also increased sensitivity to noise and surface variation.</li>
+<li>Mechanical bump sensors were extremely reliable for wall detection, though they only provided discrete contact feedback rather than continuous distance measurement.</li>
+<li>The IMU added useful motion information, but integrating it fully into the closed-loop behavior would require more development and filtering.</li>
+<li>The overall design favored simplicity and robustness over unnecessary mechanical complexity.</li>
+</ul>
+
+<div class="figure-placeholder">
+<b>Insert here:</b> robot photo, sensor close-up image, wiring diagram, and any CAD or mounting images.
+</div>
 
 </div>
 </section>
-
 
 <section id="implementation">
 <h2>Software Implementation</h2>
 <div class="card">
 
+<h3>Software Architecture</h3>
 <p>
-Discuss Python code, architecture, state machines, and algorithms here.
+The robot software was organized using a cooperative multitasking architecture. Rather than placing all logic into one large control loop, the code was divided into separate task modules that each handled a specific responsibility. This improved modularity, made debugging easier, and allowed each subsystem to be developed more independently.
 </p>
+
+<p>
+The main program initialized hardware and created the task structure. Individual Python modules were used for motor control, encoder reading, line-following logic, user interaction, and high-level course behavior. This structure made it easier to test subsystems independently before integrating them into the full robot.
+</p>
+
+<h3>Main Program Role</h3>
+<p>
+The main file acted as the entry point of the robot software. It set up the timers, motor drivers, encoder interfaces, and sensor-related objects. It also initialized the scheduler and registered the tasks required for the robot to run. In other words, the main file did not itself implement the robot behavior in detail; rather, it coordinated all of the modules that together produced the final behavior.
+</p>
+
+<h3>Task-Based Organization</h3>
+<ul>
+<li><b>main.py</b> – initializes hardware, shared variables, and the scheduler</li>
+<li><b>task_motor.py</b> – handles motor effort or speed control</li>
+<li><b>task_line.py</b> – processes line sensor data and computes tracking error</li>
+<li><b>task_user.py</b> – handles user input or runtime interaction</li>
+<li><b>task_course.py</b> – implements the high-level obstacle-course state machine</li>
+<li><b>motor_driver.py</b> – low-level motor driver interface</li>
+<li><b>encoder.py</b> – reads and interprets encoder counts</li>
+</ul>
+
+<h3>Finite State Machine</h3>
+<p>
+The high-level behavior of the robot was governed by a finite state machine. This was one of the most important design decisions in the project because the course required the robot to perform different types of actions in sequence. A single continuous control loop would not have been sufficient by itself because the robot needed to switch between distinct modes such as line following, turning, driving straight, waiting for bump contact, backing up, and resuming line following.
+</p>
+
+<p>
+The state machine allowed the robot to behave in a structured and deterministic way. Each state represented a particular mode of operation, and transitions were triggered by sensor events, time thresholds, or encoder-based distance conditions.
+</p>
+
+<h3>Typical State Sequence</h3>
+<ol>
+<li><b>Line Following:</b> robot tracks the course using the QTR-8A sensor array</li>
+<li><b>Right Turn:</b> robot leaves the line-following mode and performs a controlled turn</li>
+<li><b>Drive Forward:</b> robot travels into the obstacle zone</li>
+<li><b>Bump Detect:</b> snap-action switches detect contact with the wall</li>
+<li><b>Reverse:</b> robot backs away from the wall</li>
+<li><b>Left Turn:</b> robot reorients itself toward the next section</li>
+<li><b>Resume Line Following:</b> robot reacquires the line and continues</li>
+</ol>
+
+<h3>Line Following Algorithm</h3>
+<p>
+Line following was implemented using the reflectance values from the QTR-8A sensor array. Rather than treating the sensors as simple digital thresholds, the analog readings were used to estimate the position of the line across the sensor array. A weighted average method was used, where each sensor channel was assigned a position value, and the line position estimate was computed from the relative strength of the sensor readings.
+</p>
+
+<p>
+This position estimate was then used to define an error signal relative to the center of the robot. The controller used that error to command a steering correction. In practical terms, the base motor speed was adjusted differentially so that one wheel sped up while the other slowed down, causing the robot to steer back toward the line.
+</p>
+
+<h3>Control Strategy</h3>
+<p>
+The robot used feedback control in multiple ways. During line following, the lateral line-position error was used to generate steering corrections. During straight-line or turn maneuvers, encoder feedback was used to estimate motion and improve repeatability. The general idea was to avoid relying purely on open-loop timing whenever possible, since motor and battery variations would otherwise cause inconsistent behavior.
+</p>
+
+<p>
+A proportional or PI-style control strategy was used during line following, where the control output depended on the magnitude of the error and, in some cases, the accumulated past error. This helped the robot correct its heading smoothly rather than oscillating excessively from side to side.
+</p>
+
+<h3>Encoder-Based Motion Estimation</h3>
+<p>
+Wheel encoders were essential for estimating travel distance and turn behavior. Encoder counts were used to compute wheel displacement, which in turn allowed the robot to estimate when it had traveled far enough to complete a maneuver such as backing up or turning. This was especially important for making the obstacle-course routine more repeatable.
+</p>
+
+<p>
+For a wheel of radius <i>R</i>, the linear distance traveled can be related to encoder counts through the wheel circumference. Likewise, the difference in displacement between the left and right wheels can be used to estimate how much the robot has rotated. While the system was tuned heavily through experimentation, these relationships provided a mathematical basis for maneuver design.
+</p>
+
+<h3>IMU Use in Software</h3>
+<p>
+The IMU provided additional information about angular motion and orientation. Even when not used as the primary control signal, it offered useful insight into robot dynamics and could support future improvements such as heading correction or more advanced state estimation. Including the IMU in the sensing framework strengthened the overall system by giving another way to interpret motion beyond encoders alone.
+</p>
+
+<h3>Implementation Challenges</h3>
+<p>
+Developing the software required solving several practical issues. One of the most significant was memory limitation on the microcontroller. As the project grew and more tasks, variables, and sensor objects were added, memory usage became a real constraint. This forced careful optimization and removal of unnecessary allocations.
+</p>
+
+<p>
+Another major issue involved bump sensor state persistence. If the bump event was not cleared properly, the robot could incorrectly behave as though it were still touching the wall during later parts of the run. Fixing this required explicit reset logic in the state machine.
+</p>
+
+<p>
+Tuning the turn angles and travel distances was also more difficult than expected. Small differences in motor performance, wheel slip, or starting position could produce noticeable variation in the robot’s final orientation. This required iterative testing and repeated adjustment of thresholds and gains.
+</p>
+
+<div class="figure-placeholder">
+<b>Insert here:</b> state machine diagram, task diagram, code snippets from main.py or task_course.py, and any scheduler/task architecture figure.
+</div>
 
 </div>
 </section>
-
 
 <section id="results">
 <h2>Analysis and Results</h2>
 <div class="card">
 
+<h3>Performance Summary</h3>
 <p>
-Include calculations, plots, observations, and evaluation here.
+The final robot was able to perform the major required tasks of the obstacle course, including line following, wall detection, backing up, and reorientation. Performance improved significantly as the control gains and motion thresholds were refined. By the later stages of testing, the robot demonstrated more repeatable behavior and more reliable transitions between states.
 </p>
+
+<h3>Line Following Performance</h3>
+<p>
+The QTR-8A sensor array allowed the robot to track the line smoothly once the reflectance readings were calibrated and the steering gains were tuned. One of the key observations during testing was that early line detection, enabled by the forward placement of the sensor array, helped reduce overshoot and improved cornering response. However, this same sensitivity meant that poor calibration or inconsistent sensor height could introduce noisy behavior.
+</p>
+
+<h3>Obstacle Detection and Recovery</h3>
+<p>
+The snap-action bump sensors proved to be one of the most reliable subsystems on the robot. Once properly mounted, they provided clear wall-contact detection and triggered the recovery maneuver consistently. The main challenge was not the hardware itself, but ensuring the software cleared the bump condition after the event so the robot could continue operating normally.
+</p>
+
+<h3>Motion Accuracy</h3>
+<p>
+Encoder feedback improved the robot’s ability to drive specific distances and execute more repeatable turning maneuvers. Even so, some variation remained due to wheel slip, motor asymmetry, and battery or friction effects. This highlighted an important lesson from the project: a mathematically sound model is necessary, but real-world robot performance still depends heavily on testing and tuning.
+</p>
+
+<h3>Engineering Reflection on Results</h3>
+<p>
+One of the most important outcomes of the project was learning how subsystem performance changes after full integration. Individual modules such as line sensing, bump detection, and motor control could appear successful when tested alone, but combining them into one full autonomous system introduced new challenges involving timing, state transitions, and resource limitations. This emphasized the importance of designing the software architecture with integration in mind from the beginning.
+</p>
+
+<h3>Potential Future Improvements</h3>
+<ul>
+<li>Use IMU feedback more directly in turning control or heading stabilization</li>
+<li>Add more filtering or normalization to the line-sensor readings</li>
+<li>Improve turn consistency with more closed-loop angle estimation</li>
+<li>Integrate subsystem testing earlier to reduce late-stage debugging</li>
+<li>Refine the mechanical mounting of sensors for even more repeatable readings</li>
+</ul>
+
+<div class="figure-placeholder">
+<b>Insert here:</b> plots, tuning data, screenshots of sensor readings, measured results, or a table comparing early versus final performance.
+</div>
 
 </div>
 </section>
-
 
 <section id="media">
 <h2>Photos and Figures</h2>
 <div class="card">
 
 <p>
-Add images, diagrams, and figures of the robot and experiments here.
+This section should include photographs of the final robot, close-up images of the line sensor array and bump switches, wiring diagrams, CAD or mount drawings if available, and diagrams showing the state machine or software architecture. Including visuals is important because it helps explain the design choices made throughout the project and makes the portfolio easier for others to understand.
 </p>
+
+<ul>
+<li>Final assembled robot photo</li>
+<li>Underside view showing the Pololu QTR-8A line sensor array</li>
+<li>Front view showing bump switch placement</li>
+<li>Wiring diagram</li>
+<li>Task architecture diagram</li>
+<li>Finite state machine diagram</li>
+</ul>
+
+<div class="figure-placeholder">
+<b>Replace this area with actual images using &lt;img&gt; tags.</b>
+</div>
 
 </div>
 </section>
-
 
 <section id="video">
 <h2>Demonstration Video</h2>
 <div class="card">
 
 <p>
-Embed or link to the robot demonstration video here.
+A video demonstration of the robot operating on the course should be embedded here or linked below. The video should show the robot working at its best level of performance and clearly demonstrate the main project objectives: line following, turning, wall detection, backing up, and resuming navigation.
+</p>
+
+<p>
+<a class="code-link" href="PASTE_VIDEO_LINK_HERE" target="_blank">Watch the Demonstration Video</a>
+</p>
+
+<p>
+If you would like to embed the video directly, replace the link above with an embedded YouTube iframe.
 </p>
 
 </div>
 </section>
-
 
 <section id="repository">
 <h2>Project Repository</h2>
 <div class="card">
 
 <p>
-Link to the GitHub repository and code documentation here.
+The full project repository contains all source code, supporting documentation, and design materials needed to understand or reproduce the system. The repository includes the main control program, task modules, driver files, diagrams, and media used in this portfolio.
+</p>
+
+<h3>Key Files</h3>
+<p>
+Use this section to provide direct links to the most important files in the repository.
+</p>
+
+<p>
+<a class="code-link" href="main.py" target="_blank">main.py</a>
+<a class="code-link" href="task_course.py" target="_blank">task_course.py</a>
+<a class="code-link" href="task_line.py" target="_blank">task_line.py</a>
+<a class="code-link" href="task_motor.py" target="_blank">task_motor.py</a>
+<a class="code-link" href="motor_driver.py" target="_blank">motor_driver.py</a>
+<a class="code-link" href="encoder.py" target="_blank">encoder.py</a>
+</p>
+
+<p>
+<a class="code-link" href="PASTE_GITHUB_REPOSITORY_LINK_HERE" target="_blank">Open Full GitHub Repository</a>
+</p>
+
+<h3>Reproducibility</h3>
+<p>
+To make the project reproducible, the repository should also contain design files for any custom mounts or mechanical components, a wiring diagram, and this portfolio website. Together, these materials document not just the final code, but the full engineering process behind the robot.
 </p>
 
 </div>
 </section>
 
-
 </div>
 
-
 <footer>
-<p>Romi Robot Project | GitHub Portfolio</p>
+<p>Romi Robot Project | Final Portfolio Website</p>
 </footer>
-
 
 </body>
 </html>
