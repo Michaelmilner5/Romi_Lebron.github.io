@@ -113,7 +113,7 @@ box-shadow:0 2px 8px rgba(0,0,0,0.08);
 margin:18px 0;
 padding:18px;
 background:#eef2f5;
-border-left:4px solid #4da3ff;
+border-left:4px solid #4da3ff; 
 border-radius:6px;
 }
 
@@ -432,6 +432,141 @@ One of the biggest lessons from the software side of this project was how much e
 </div>
 </section>
 
+<section id="code">
+<h2>Code Architecture and File-by-File Implementation</h2>
+<div class="card">
+
+<p>
+One of the biggest goals of this project was to keep the software organized in a way that made the robot easier to test, debug, and improve over time. Instead of writing one large script that handled everything at once, the code was broken into multiple files with clearly defined roles. This made the system much more manageable, especially once the project grew to include line sensing, motor control, bump detection, IMU processing, observer estimation, logging, and a user interface.
+</p>
+
+<p>
+At a high level, the software is built around a cooperative multitasking architecture. The <code>main.py</code> file initializes the hardware, creates the task objects, allocates shared variables and queues, and registers everything with the scheduler. Each task then runs periodically and focuses on one specific job, such as controlling a motor, reading the IMU, following the line, or handling bump events. This structure made the project feel much more like a real embedded robotic system rather than a collection of disconnected lab scripts. :contentReference[oaicite:0]{index=0} :contentReference[oaicite:1]{index=1}
+</p>
+
+<h3>Main Integration File</h3>
+
+<h4><code>main.py</code></h4>
+<p>
+The main file is the center of the entire project. It initializes the PWM timer for the motors, configures two encoder timers, creates the line sensor array, starts I2C communication for the BNO055 IMU, and sets up a shared UART channel for estimator streaming. It also creates all of the Shares and Queues used by the tasks, including motor enable flags, line-follow setpoints, observer values, IMU values, and logging buffers. After that, it instantiates the task objects and adds them to the scheduler. In other words, <code>main.py</code> is the system integration layer that ties the whole robot together. :contentReference[oaicite:2]{index=2}
+</p>
+
+<h3>Task Files</h3>
+
+<p>
+The task files are the heart of the robot behavior. Each one is responsible for a specific subsystem and is designed to run repeatedly under the cooperative scheduler.
+</p>
+
+<h4><code>task_motor.py</code></h4>
+<p>
+This file implements the motor-control task for each wheel. It combines encoder updates with PI velocity control and also publishes useful observer signals such as motor input voltage and wheel displacement in meters. One especially good design choice in this file is that encoder position continues to update even when the motor is not actively being commanded to run. That means the observer can still track wheel displacement if the robot is moved by hand or if the control state changes. The file also includes automatic encoder sign handling so forward motion is treated consistently as positive. Overall, this file handles the low-level closed-loop actuation that makes the rest of the robot possible. :contentReference[oaicite:3]{index=3}
+</p>
+
+<h4><code>task_line.py</code></h4>
+<p>
+This file contains the line-following outer-loop controller. It uses a centroid-based line detection method and writes left and right velocity setpoints whenever line following is enabled. The task uses proportional, integral, and derivative terms and includes several practical improvements for weak line signals, such as a smaller denominator floor, realistic confidence thresholds, and logic to hold the last valid position when the line signal becomes poor instead of immediately commanding an aggressive spin. That makes this file especially important for real-world stability, because it shows the controller was designed with imperfect sensor data in mind rather than assuming ideal conditions. :contentReference[oaicite:4]{index=4}
+</p>
+
+<h4><code>task_imu.py</code></h4>
+<p>
+This file is responsible for acquiring and conditioning the IMU measurements. It reads heading and yaw rate from the BNO055, converts values into useful forms, and publishes them to Shares for use by the rest of the system. A major strength of this file is that it handles heading unwrapping, meaning the robot can track a continuous heading instead of being limited to wrapped angles between 0 and 360 degrees. It also contains a non-blocking calibration flow with the ability to load saved calibration data from a file, wait for calibration to complete, save new coefficients, and rezero the heading after calibration. Spike rejection and yaw-rate filtering are also included, which helps protect the rest of the system from bad sensor reads. :contentReference[oaicite:5]{index=5} :contentReference[oaicite:6]{index=6}
+</p>
+
+<h4><code>task_observer.py</code></h4>
+<p>
+This file implements the observer task, which is one of the most advanced parts of the project. It takes in motor voltages, measured wheel displacements, heading, and yaw rate, and uses a discrete-time state-space model to estimate the robot state. The code is written to support either a 4x6 concatenated input matrix or a more standard innovation-form observer, depending on how the matrices are defined. It loads the matrices at runtime, checks their dimensions, and falls back gracefully if the matrices are unavailable. This task also supports streaming state estimates over UART, which makes it useful not only for robot operation but also for visualization and debugging. From a portfolio standpoint, this file shows that the project goes beyond simple reactive control and into model-based estimation. :contentReference[oaicite:7]{index=7}
+</p>
+
+<h4><code>task_bump.py</code></h4>
+<p>
+This file handles collision detection using the left and right snap-action bump switches. It uses edge detection by comparing the current switch state to the previous switch state, which means it only reacts when a new press occurs. When either bump sensor transitions from unpressed to pressed, the task immediately disables both motor go flags and disables line following. This is a very effective safety and event-handling design because it gives the robot a clean and immediate response to contact instead of leaving the reaction up to slower or less certain logic elsewhere in the system. :contentReference[oaicite:8]{index=8}
+</p>
+
+<h4><code>task_user.py</code></h4>
+<p>
+This file implements the serial user interface for the robot. It is much more than a simple print menu. Through this task, the user can tune inner-loop gains, change the line-follow base speed, calibrate the line sensors on white and black surfaces, print sensor values, start and stop line following, trigger IMU calibration, save calibration data, and inspect observer estimates and raw measurements. It also handles the user prompts and manages UART output related to line-follow and estimator streaming. This file made the development process much smoother because it turned many parameters into runtime-adjustable values instead of requiring repeated code edits and reflashing. :contentReference[oaicite:9]{index=9} :contentReference[oaicite:10]{index=10}
+</p>
+
+<h4><code>task_log_est.py</code></h4>
+<p>
+This file logs observer estimates over time using queues. In addition to storing estimated forward position, heading, and wheel speeds, it also computes x and y position estimates through dead reckoning using the change in estimated forward displacement and the current estimated heading. This makes the file useful for offline analysis and visualization of how the observer tracks the robot’s motion through space. Even if it is not part of the core runtime behavior for the final demo, it is a valuable analysis tool that strengthens the technical depth of the project. :contentReference[oaicite:11]{index=11}
+</p>
+
+<h4><code>task_garbage.py</code></h4>
+<p>
+This is a very small but practical file. It continuously calls the garbage collector inside a generator task so memory can be cleaned up periodically in the background. On a microcontroller running MicroPython, that matters a lot, especially once several tasks, queues, and sensor-processing routines are active at once. It reflects an awareness that memory management is part of real embedded-system design, not just something that happens automatically. :contentReference[oaicite:12]{index=12}
+</p>
+
+<h3>Hardware Interface and Driver Classes</h3>
+
+<p>
+These files provide the direct interface between the high-level control code and the robot hardware.
+</p>
+
+<h4><code>motor_driver.py</code></h4>
+<p>
+This file defines the motor driver class. It wraps the PWM and direction control logic for a motor driver like the DRV8838 used on the Romi chassis. The class sets up the sleep pin, direction pin, and PWM channel, and it provides simple methods to set motor effort, enable the driver, and disable it. The higher-level control tasks do not need to worry about the exact details of which pin should go high or low to produce forward or reverse motion, because this class handles that abstraction. :contentReference[oaicite:13]{index=13}
+</p>
+
+<h4><code>encoder.py</code></h4>
+<p>
+This file defines the encoder class used for reading wheel position and velocity. It configures the timer in encoder mode, tracks the previous counter value, handles timer wraparound, and computes both cumulative position and velocity based on the time between samples. This file is fundamental to the project because encoder feedback is used not only for PI motor control, but also as one of the core measurements for state estimation. :contentReference[oaicite:14]{index=14}
+</p>
+
+<h4><code>line_sensor.py</code></h4>
+<p>
+This file defines the <code>LineSensorArray</code> class used to work with the Pololu QTRX-A reflectance sensor array. It creates ADC objects for each analog sensor channel, manages the emitter pin, reads raw values with optional oversampling and ambient cancellation, and supports white and black calibration. Because the line-follow task depends on normalized and meaningful reflectance values, this file plays a huge role in turning raw analog voltages into information that the controller can use. The ability to calibrate white and black surfaces in software is especially important because it compensates for differences in lighting, mounting height, and sensor response. :contentReference[oaicite:15]{index=15}
+</p>
+
+<h4><code>driver.py</code></h4>
+<p>
+This file contains the BNO055 driver used by the IMU task. It handles low-level I2C communication, verifies the chip ID, sets operating modes, reads calibration status, reads Euler heading and gyro values, and supports reading and writing the calibration coefficients. This separation is good design practice because it keeps the raw sensor communication details in one place and lets the higher-level IMU task focus on filtering, unwrapping, and publishing the measurements. :contentReference[oaicite:16]{index=16}
+</p>
+
+<h3>Task Infrastructure Files</h3>
+
+<h4><code>task_share.py</code></h4>
+<p>
+This file provides the shared-data infrastructure used throughout the system. It defines <code>BaseShare</code>, <code>Queue</code>, and <code>Share</code>, along with helper structures such as the global share list and diagnostic formatting. The Queue class handles buffered communication between tasks, while the Share class holds the latest value of a variable that multiple tasks need to access. This file is part of what makes the multitasking architecture practical, since it allows tasks to communicate cleanly without having to directly reach into each other’s local variables. :contentReference[oaicite:17]{index=17} :contentReference[oaicite:18]{index=18} :contentReference[oaicite:19]{index=19}
+</p>
+
+<h4><code>cotask.py</code></h4>
+<p>
+This file implements the cooperative scheduler itself. It defines the <code>Task</code> class and the <code>TaskList</code> class. A task is treated as a generator that yields control after each run, and the scheduler decides when each task is ready based on timing or go flags. The file also supports profiling, transition tracing, and priority-based scheduling. This is the backbone of the system architecture, because it allows all of the robot subsystems to run predictably without using a full RTOS. :contentReference[oaicite:20]{index=20} :contentReference[oaicite:21]{index=21} :contentReference[oaicite:22]{index=22}
+</p>
+
+<h3>Modeling and Observer Support Files</h3>
+
+<h4><code>observer_matrices.py</code></h4>
+<p>
+This file stores the discrete-time observer matrices used by the observer task. It includes the sample time and the state-space matrices that represent the robot model. The comments in the file indicate that the matrices were generated using physical parameters such as wheel radius, wheel spacing, motor time constant, and motor gain. This is one of the strongest pieces of evidence that the project connects directly back to controls theory and physical modeling. :contentReference[oaicite:23]{index=23}
+</p>
+
+<h4><code>make_observer_matrices.py</code></h4>
+<p>
+This file is a support script used to generate the observer matrices from a continuous-time model. It uses NumPy and SciPy tools such as <code>cont2discrete</code> and <code>place_poles</code> to define a continuous plant model, select observer poles, discretize the model, and print the resulting matrices in a format that can be pasted into <code>observer_matrices.py</code>. Even though this file does not run on the robot itself, it is important portfolio material because it documents how the observer matrices were produced. :contentReference[oaicite:24]{index=24}
+</p>
+
+<h3>Startup and Support Files</h3>
+
+<h4><code>boot.py</code></h4>
+<p>
+This file is the standard MicroPython boot file. In this project it mainly serves as a startup configuration file and template, with comments showing how USB modes or startup script behavior could be configured if needed. It is not where the robot logic lives, but it is still part of the full software package. :contentReference[oaicite:25]{index=25}
+</p>
+
+<h3>How the Files Work Together</h3>
+
+<p>
+The overall flow of the code is straightforward once the roles of the files are separated. The hardware interface classes provide access to the motors, encoders, line sensors, and IMU. The task infrastructure files provide the scheduler and the communication tools. The task files sit on top of those layers and implement the actual robot behavior: reading sensors, estimating states, controlling motion, detecting events, and responding to user commands. Finally, the support files such as the observer matrix generator and boot file complete the overall software package.
+</p>
+
+<p>
+What I like most about this organization is that it mirrors how the robot itself works. The robot is not one single behavior. It is a collection of interacting subsystems, each with its own job, and the code structure reflects that clearly. That ended up making the project much easier to understand and much easier to present as a final portfolio.
+</p>
+
+</div>
+</section>
+  
 <section id="results">
 <h2>Analysis and Results</h2>
 <div class="card">
