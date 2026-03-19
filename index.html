@@ -625,49 +625,140 @@ The hardware interface classes provide access to the motors, encoders, line sens
 <div class="card">
 
 <p>
-In addition to the high-level software discussion above, separate documentation pages were created for the major source files in the project. These pages explain the purpose of each file, the classes or tasks defined inside it, the shares and queues it uses, and how it connects to the rest of the system.
-</p>
-
-<p>
-This makes the portfolio easier to navigate and gives a more complete picture of how the codebase is organized.
+The files below link to dedicated documentation pages for each source file. Each documentation page explains the file’s role in the project, important classes or tasks, key variables, and how that file interacts with the rest of the software system. A second link is also provided to open the original source code directly.
 </p>
 
 <h3>Main and Task Files</h3>
-<div class="file-links">
-<a href="pages/main_py.html" target="_blank">main.py</a>
-<a href="pages/task_motor_py.html" target="_blank">task_motor.py</a>
-<a href="pages/task_line_py.html" target="_blank">task_line.py</a>
-<a href="pages/task_imu_py.html" target="_blank">task_imu.py</a>
-<a href="pages/task_observer_py.html" target="_blank">task_observer.py</a>
-<a href="pages/task_bump_py.html" target="_blank">task_bump.py</a>
-<a href="pages/task_user_py.html" target="_blank">task_user.py</a>
-<a href="pages/task_log_est_py.html" target="_blank">task_log_est.py</a>
-<a href="pages/task_garbage_py.html" target="_blank">task_garbage.py</a>
-</div>
 
-<h3>Driver and Support Files</h3>
-<div class="file-links">
-<a href="pages/line_sensor_py.html" target="_blank">line_sensor.py</a>
-<a href="pages/motor_driver_py.html" target="_blank">motor_driver.py</a>
-<a href="pages/encoder_py.html" target="_blank">encoder.py</a>
-<a href="pages/driver_py.html" target="_blank">driver.py</a>
-<a href="pages/task_share_py.html" target="_blank">task_share.py</a>
-<a href="pages/cotask_py.html" target="_blank">cotask.py</a>
-<a href="pages/observer_matrices_py.html" target="_blank">observer_matrices.py</a>
-<a href="pages/make_observer_matrices_py.html" target="_blank">make_observer_matrices.py</a>
-<a href="pages/boot_py.html" target="_blank">boot.py</a>
-</div>
+<ul>
+<li>
+<a href="pages/main_py.html" target="_blank"><b>main.py</b></a> – Initializes hardware, shared variables, queues, and the task scheduler for the full robot system.
+<a href="main.py" target="_blank">[Open raw file]</a>
+</li>
 
-<details>
-<summary>Click to see how to use this section</summary>
-<p>
-Each documentation page can include the file purpose, classes, tasks, important shares and queues, key variables, code snippets, and a link back to the main portfolio. This keeps the main page readable while still allowing much deeper code documentation for each file.
-</p>
-</details>
+<li>
+<a href="pages/task_course_py.html" target="_blank"><b>task_course.py</b></a> – Implements the high-level finite state machine for the full obstacle course sequence.
+<a href="task_course.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_motor_py.html" target="_blank"><b>task_motor.py</b></a> – Controls each motor using encoder feedback and PI velocity regulation.
+<a href="task_motor.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_line_py.html" target="_blank"><b>task_line.py</b></a> – Performs centroid-based line sensing and generates steering-related speed commands.
+<a href="task_line.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_imu_py.html" target="_blank"><b>task_imu.py</b></a> – Reads, filters, and calibrates IMU heading and yaw-rate data.
+<a href="task_imu.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_observer_py.html" target="_blank"><b>task_observer.py</b></a> – Runs the discrete-time state observer and publishes estimated robot states.
+<a href="task_observer.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_bump_py.html" target="_blank"><b>task_bump.py</b></a> – Detects collision events and forces a stop response when the bump switches are triggered.
+<a href="task_bump.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_start_button_py.html" target="_blank"><b>task_start_button.py</b></a> – Handles debounced pushbutton input to start or stop the course.
+<a href="task_start_button.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_user_py.html" target="_blank"><b>task_user.py</b></a> – Provides the serial user interface and runtime command interaction.
+<a href="task_user.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_user_cmds_py.html" target="_blank"><b>task_user_cmds.py</b></a> – Contains helper command logic used by the serial interface.
+<a href="task_user_cmds.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_log_est_py.html" target="_blank"><b>task_log_est.py</b></a> – Logs observer estimates and computes dead-reckoned position for analysis.
+<a href="task_log_est.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_garbage_py.html" target="_blank"><b>task_garbage.py</b></a> – Runs background garbage collection to help manage MicroPython memory usage.
+<a href="task_garbage.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/debug_motor_py.html" target="_blank"><b>debug_motor.py</b></a> – Standalone debugging script for validating motor task behavior.
+<a href="debug_motor.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/test_motor_py.html" target="_blank"><b>test_motor.py</b></a> – Direct motor test script for checking motor driver operation outside the full system.
+<a href="test_motor.py" target="_blank">[Open raw file]</a>
+</li>
+</ul>
+
+<h3>Driver, Utility, and Support Files</h3>
+
+<ul>
+<li>
+<a href="pages/line_sensor_py.html" target="_blank"><b>line_sensor.py</b></a> – Defines the line sensor array class, including ADC reads, emitter control, and calibration support.
+<a href="line_sensor.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/motor_driver_py.html" target="_blank"><b>motor_driver.py</b></a> – Implements the motor driver abstraction for PWM, direction, and enable control.
+<a href="motor_driver.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/encoder_py.html" target="_blank"><b>encoder.py</b></a> – Implements encoder counting, wraparound handling, and velocity estimation.
+<a href="encoder.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/driver_py.html" target="_blank"><b>driver.py</b></a> – Low-level BNO055 IMU driver for I2C communication and calibration data handling.
+<a href="driver.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/task_share_py.html" target="_blank"><b>task_share.py</b></a> – Defines the Share and Queue classes used for communication between cooperative tasks.
+<a href="task_share.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/cotask_py.html" target="_blank"><b>cotask.py</b></a> – Implements the cooperative task scheduler and task timing framework.
+<a href="cotask.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/observer_matrices_py.html" target="_blank"><b>observer_matrices.py</b></a> – Stores the discrete-time observer matrices used by the estimator.
+<a href="observer_matrices.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/make_observer_matrices_py.html" target="_blank"><b>make_observer_matrices.py</b></a> – Offline support script used to generate observer matrices from a continuous-time model.
+<a href="make_observer_matrices.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/boot_py.html" target="_blank"><b>boot.py</b></a> – Standard MicroPython boot file included as part of the final software package.
+<a href="boot.py" target="_blank">[Open raw file]</a>
+</li>
+
+<li>
+<a href="pages/line_calib_json.html" target="_blank"><b>line_calib.json</b></a> – Stores white and black calibration values for the line sensor array.
+<a href="line_calib.json" target="_blank">[Open raw file]</a>
+</li>
+</ul>
 
 </div>
 </section>
-
+  
 <section id="results">
 <h2>Analysis and Results</h2>
 <div class="card">
