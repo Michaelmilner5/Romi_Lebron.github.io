@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>main.py Documentation</title>
-
 <style>
 body{
 font-family: Arial, Helvetica, sans-serif;
@@ -47,7 +46,7 @@ border-radius:8px;
 overflow-x:auto;
 }
 details{
-margin-top:18px;
+margin-top:16px;
 background:#f8fafc;
 border:1px solid #dbe4ea;
 border-radius:8px;
@@ -57,193 +56,162 @@ summary{
 cursor:pointer;
 font-weight:bold;
 }
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:12px;
-}
-th, td{
-border:1px solid #dbe4ea;
-padding:8px;
-text-align:left;
-}
-th{
-background:#eef2f5;
+ul{
+padding-left:24px;
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
 <p><a href="../index.html">← Back to Main Portfolio</a></p>
 
 <div class="card">
-
 <h1>main.py</h1>
 
 <h2>Purpose</h2>
 <p>
-This file initializes the complete robot system and acts as the integration layer between all subsystems. It sets up hardware interfaces, creates shared variables, instantiates all tasks, and runs the cooperative scheduler.
+This file is the main integration point for the entire robot. It imports all required modules, initializes the hardware interfaces, creates the shared variables used for inter-task communication, instantiates the task objects, adds them to the cooperative scheduler, and then continuously runs the robot through round-robin task scheduling. In practical terms, <code>main.py</code> is what turns the individual subsystems into one complete autonomous robot. :contentReference[oaicite:1]{index=1}
 </p>
 
-<h2>Main Role</h2>
+<h2>Main Role in the Project</h2>
 <p>
-<code>main.py</code> connects all modules into one functioning robot. It determines how data flows between tasks and how frequently each task executes.
+While the detailed behavior of the robot lives inside separate files such as <code>task_motor.py</code>, <code>task_line.py</code>, <code>task_imu.py</code>, and <code>task_course.py</code>, this file is responsible for wiring everything together. It creates the exact objects used by the system, determines how those tasks communicate, and defines how often each task runs. Because of that, it is one of the most important files in the entire project. :contentReference[oaicite:2]{index=2}
 </p>
 
----
-
-<h2>System Architecture Overview</h2>
-<p>
-The system is built on a cooperative multitasking framework. Each subsystem runs as a task and communicates through Shares. The scheduler repeatedly executes tasks based on priority and timing.
-</p>
-
----
-
-<h2>Hardware Initialization</h2>
-
-<details>
-<summary>View Hardware Setup</summary>
-
+<h2>Hardware Initialization Performed in This File</h2>
 <ul>
-<li><b>PWM Timer:</b> 20 kHz timer used for motor control</li>
-<li><b>Motor Drivers:</b> Left and right motor control objects</li>
-<li><b>Encoders:</b> Quadrature encoders for wheel position and velocity</li>
-<li><b>Line Sensor Array:</b> 8-channel reflectance sensor system</li>
-<li><b>IMU:</b> BNO055 connected via I2C</li>
-<li><b>I2C Bus:</b> 400 kHz communication interface</li>
+<li><b>PWM timer:</b> A PWM timer is created at 20 kHz for the motor drivers.</li>
+<li><b>Motor drivers:</b> Left and right motor driver objects are created using the appropriate MCU pins.</li>
+<li><b>Encoder timers:</b> Two timers are configured for encoder feedback, one for each wheel.</li>
+<li><b>Encoder objects:</b> Left and right encoder objects are created and attached to their timer interfaces.</li>
+<li><b>Line sensor array:</b> A <code>LineSensorArray</code> object is created using eight analog pins and an emitter pin, with symmetric sensor weights from -3.5 to 3.5.</li>
+<li><b>Line calibration:</b> The program attempts to load stored reflectance calibration values from <code>line_calib.json</code>.</li>
+<li><b>I2C interface:</b> I2C bus 1 is initialized at 400 kHz.</li>
+<li><b>IMU object:</b> A BNO055 IMU object is created on the I2C bus.</li>
 </ul>
 
-</details>
-
----
-
-<h2>Shared Variables (Core Communication Layer)</h2>
-
+<h2>Important Shared Variables</h2>
 <p>
-Shares allow safe communication between tasks. Each Share represents a piece of system state.
+A major part of <code>main.py</code> is the creation of Shares. These are what allow the independent tasks to communicate without directly reaching into each other’s local variables.
 </p>
 
-<details>
-<summary>View All Share Attributes</summary>
-
-<table>
-<tr><th>Share Name</th><th>Type</th><th>Description</th></tr>
-
-<tr><td>leftMotorGo</td><td>bool</td><td>Enables/disables left motor task</td></tr>
-<tr><td>rightMotorGo</td><td>bool</td><td>Enables/disables right motor task</td></tr>
-
-<tr><td>velSetpoint_L</td><td>float</td><td>Desired left wheel velocity</td></tr>
-<tr><td>velSetpoint_R</td><td>float</td><td>Desired right wheel velocity</td></tr>
-
-<tr><td>KpShare</td><td>float</td><td>Proportional gain for motor PI control</td></tr>
-<tr><td>KiShare</td><td>float</td><td>Integral gain for motor PI control</td></tr>
-
-<tr><td>uL_volts</td><td>float</td><td>Left motor voltage (observer input)</td></tr>
-<tr><td>uR_volts</td><td>float</td><td>Right motor voltage (observer input)</td></tr>
-
-<tr><td>sL_meas</td><td>float</td><td>Measured left wheel displacement</td></tr>
-<tr><td>sR_meas</td><td>float</td><td>Measured right wheel displacement</td></tr>
-
-<tr><td>psi_meas</td><td>float</td><td>Measured heading from IMU</td></tr>
-<tr><td>psiDot_meas</td><td>float</td><td>Measured yaw rate</td></tr>
-
-<tr><td>s_hat</td><td>float</td><td>Estimated forward position</td></tr>
-<tr><td>psi_hat</td><td>float</td><td>Estimated heading</td></tr>
-<tr><td>wL_hat</td><td>float</td><td>Estimated left wheel speed</td></tr>
-<tr><td>wR_hat</td><td>float</td><td>Estimated right wheel speed</td></tr>
-
-<tr><td>lfEnableShare</td><td>bool</td><td>Enables line-following mode</td></tr>
-<tr><td>courseEnableShare</td><td>bool</td><td>Enables full obstacle course FSM</td></tr>
-
-<tr><td>bumpEventShare</td><td>bool</td><td>Indicates collision detected</td></tr>
-
-<tr><td>imuCalReq</td><td>bool</td><td>Requests IMU calibration</td></tr>
-<tr><td>estStreamEnable</td><td>bool</td><td>Enables estimator streaming output</td></tr>
-
-<tr><td>vBaseShare</td><td>float</td><td>Base velocity for line following</td></tr>
-
-</table>
-
-</details>
-
----
-
-<h2>Task Breakdown</h2>
-
-<details>
-<summary>View Task Descriptions</summary>
-
+<h3>Motion and Motor Shares</h3>
 <ul>
-<li><b>Motor Tasks:</b> Closed-loop PI velocity control for each wheel</li>
-<li><b>Line Follow Task:</b> Computes steering corrections</li>
-<li><b>IMU Task:</b> Reads heading and yaw rate</li>
-<li><b>Observer Task:</b> Estimates system states</li>
-<li><b>Bump Task:</b> Handles collision safety</li>
-<li><b>Start Button Task:</b> Controls system enable</li>
-<li><b>Course Task:</b> Runs full obstacle course FSM</li>
-<li><b>User Task:</b> Handles serial commands</li>
-<li><b>Garbage Task:</b> Manages memory</li>
+<li><code>leftMotorGo</code> and <code>rightMotorGo</code> – enable or disable the left and right motor tasks</li>
+<li><code>velSetpoint_L</code> and <code>velSetpoint_R</code> – desired velocity setpoints for the two wheels</li>
+<li><code>KpShare</code> and <code>KiShare</code> – PI gains used by both motor tasks</li>
+<li><code>uL_volts</code> and <code>uR_volts</code> – commanded motor voltages for the observer</li>
+<li><code>sL_meas</code> and <code>sR_meas</code> – measured wheel displacement values used by the observer</li>
 </ul>
 
-</details>
+<h3>Line-Following and Course Shares</h3>
+<ul>
+<li><code>vBaseShare</code> – base forward speed used by the line-following controller</li>
+<li><code>lfEnableShare</code> – enables or disables line-following mode</li>
+<li><code>courseEnableShare</code> – master enable flag for the full autonomous course routine</li>
+<li><code>bumpEventShare</code> – indicates that a bump event has occurred</li>
+</ul>
 
----
+<h3>IMU and Estimation Shares</h3>
+<ul>
+<li><code>psi_meas</code> – measured heading from the IMU</li>
+<li><code>psiDot_meas</code> – measured yaw rate from the IMU</li>
+<li><code>s_hat</code>, <code>psi_hat</code>, <code>wL_hat</code>, and <code>wR_hat</code> – observer-estimated forward position, heading, and wheel speeds</li>
+<li><code>imuCalReq</code> – request flag for IMU calibration</li>
+<li><code>estStreamEnable</code> – enables estimator streaming output</li>
+</ul>
 
-<h2>Scheduler Configuration</h2>
-
-<details>
-<summary>View Scheduler Setup</summary>
-
-<pre><code>
-task_list.append(Task(leftMotorTask.run, priority=3, period=5))
-task_list.append(Task(rightMotorTask.run, priority=3, period=5))
-task_list.append(Task(lineFollowTask.run, priority=2, period=10))
-task_list.append(Task(userTask.run, priority=2, period=20))
-task_list.append(Task(imuTask.run, priority=1, period=20))
-task_list.append(Task(courseTask.run, priority=4, period=20))
-task_list.append(Task(bumpTask.run, priority=5, period=5))
-task_list.append(Task(startBtnTask.run, priority=3, period=20))
-task_list.append(Task(garbage, priority=0, period=100))
-</code></pre>
-
-</details>
-
----
-
-<h2>Interactive Behavior</h2>
-
+<h2>Default Initialization Values</h2>
 <p>
-The system is interactive through:
+This file also establishes the startup state of the full robot. The PI gains are initialized to <code>Kp = 0.06</code> and <code>Ki = 0.6</code>, the line-follow base speed is initialized to <code>220.0</code>, and all enable flags such as line-following, course mode, estimator streaming, bump event status, and motor-go flags are set to false initially. This ensures the robot powers up in a safe and predictable state rather than immediately starting to move. :contentReference[oaicite:3]{index=3}
+</p>
+
+<h2>Task Objects Created</h2>
+<p>
+After hardware and Shares are initialized, the file creates the main task objects that make up the full software system:
 </p>
 
 <ul>
-<li>Serial commands via <code>task_user</code></li>
-<li>Start button input</li>
-<li>Real-time sensor updates</li>
-<li>Dynamic gain tuning</li>
-<li>Live estimator streaming</li>
+<li><b>Left motor task:</b> controls the left wheel using PI velocity control and encoder feedback</li>
+<li><b>Right motor task:</b> controls the right wheel using PI velocity control and encoder feedback</li>
+<li><b>IMU task:</b> reads heading and yaw rate from the BNO055 and supports calibration requests</li>
+<li><b>User task:</b> handles serial user interaction, tuning commands, sensor display, and control actions</li>
+<li><b>Line-follow task:</b> computes steering corrections using the reflectance sensor array</li>
+<li><b>Bump task:</b> detects bump-switch events and triggers safety-related stop behavior</li>
+<li><b>Start-button task:</b> debounces the pushbutton and toggles course enable</li>
+<li><b>Course task:</b> runs the full obstacle-course finite state machine</li>
 </ul>
 
----
+<h2>Scheduler Setup</h2>
+<p>
+This file adds all major tasks to the cooperative scheduler using the <code>Task</code> class and <code>task_list.append()</code>. The final scheduler configuration uses different priorities and update periods depending on the importance and timing needs of each subsystem:
+</p>
+
+<ul>
+<li><b>Left motor task:</b> priority 3, period 5 ms</li>
+<li><b>Right motor task:</b> priority 3, period 5 ms</li>
+<li><b>Line-follow task:</b> priority 2, period 10 ms</li>
+<li><b>User-interface task:</b> priority 2, period 20 ms</li>
+<li><b>IMU task:</b> priority 1, period 20 ms</li>
+<li><b>Course task:</b> priority 4, period 20 ms</li>
+<li><b>Bump task:</b> priority 5, period 5 ms</li>
+<li><b>Start-button task:</b> priority 3, period 20 ms</li>
+<li><b>Garbage collection task:</b> priority 0, period 100 ms</li>
+</ul>
+
+<p>
+This priority structure is important. The bump task has the highest priority because safety and immediate collision response matter the most. The motor tasks also run frequently because wheel control needs to be updated quickly. Line following runs slightly slower, and user interaction or garbage collection can run at lower urgency. :contentReference[oaicite:4]{index=4}
+</p>
+
+<h2>Main Runtime Loop</h2>
+<p>
+At the bottom of the file, the system enters an infinite loop and repeatedly calls <code>task_list.rr_sched()</code>. This is what keeps the cooperative scheduler running. If a <code>KeyboardInterrupt</code> occurs, both motors are disabled before the program exits, which provides a clean and safe shutdown procedure. After exiting, the file prints task and share information for debugging. :contentReference[oaicite:5]{index=5}
+</p>
 
 <h2>Why This File Matters</h2>
 <p>
-This file defines how the robot actually operates as a system. It ensures all subsystems communicate correctly, run at the right speed, and behave safely. Without it, the robot would not function as an integrated platform.
+This file is critical because it transforms a collection of independent modules into one complete robot. Without <code>main.py</code>, the individual tasks would still exist, but they would not know how to communicate, when to run, or which hardware objects to use. It is the file that determines how the robot boots, how the software system is assembled, and how the runtime behavior is scheduled.
 </p>
 
----
-
-<h2>Engineering Insight</h2>
+<h2>Engineering Significance</h2>
 <p>
-This file demonstrates system-level thinking. It shows how embedded systems combine sensing, control, estimation, and event handling into one cohesive architecture.
+From a systems perspective, <code>main.py</code> demonstrates one of the most important ideas in this project: integration. A robot like this is not just a line sensor, not just an IMU, and not just a motor controller. It is the interaction of all of those subsystems running together. This file captures that system-level design by showing how sensing, estimation, control, event handling, and user interaction are combined into a single autonomous platform.
 </p>
 
----
+<details>
+<summary>Click to view a representative scheduler snippet</summary>
+<pre><code>task_list.append(Task(leftMotorTask.run,  name="Left Mot. Task",  priority=3, period=5,  profile=True))
+task_list.append(Task(rightMotorTask.run, name="Right Mot. Task", priority=3, period=5,  profile=True))
+task_list.append(Task(lineFollowTask.run, name="Line Follow Task", priority=2, period=10, profile=False))
+task_list.append(Task(userTask.run,       name="User Int. Task",   priority=2, period=20, profile=False))
+task_list.append(Task(imuTask.run,        name="IMU Task",         priority=1, period=20, profile=True))
+task_list.append(Task(courseTask.run,     name="Course Task",      priority=4, period=20, profile=False))
+task_list.append(Task(bumpTask.run,       name="Bump Task",        priority=5, period=5,  profile=False))
+task_list.append(Task(startBtnTask.run,   name="Start Button",     priority=3, period=20, profile=False))
+task_list.append(Task(garbage,            name="Garbage",          priority=0, period=100, profile=False))</code></pre>
+</details>
+
+<details>
+<summary>Click to view a representative hardware and share initialization snippet</summary>
+<pre><code>pwm_tim = Timer(3, freq=20000)
+
+leftMotor  = motor_driver(Pin.cpu.B1, Pin.cpu.B15, Pin.cpu.B14, pwm_tim, 4)
+rightMotor = motor_driver(Pin.cpu.B0, Pin.cpu.B5,  Pin.cpu.B4,  pwm_tim, 3)
+
+tim_enc_left  = Timer(1, period=0xFFFF, prescaler=0)
+tim_enc_right = Timer(2, period=0xFFFF, prescaler=0)
+
+leftEncoder  = encoder(tim_enc_left,  Pin.cpu.A8, Pin.cpu.A9)
+rightEncoder = encoder(tim_enc_right, Pin.cpu.A0, Pin.cpu.A1)
+
+leftMotorGo  = Share("b", name="Left Mot Go")
+rightMotorGo = Share("b", name="Right Mot Go")
+velSetpoint_L = Share("f", name="Vel Set L")
+velSetpoint_R = Share("f", name="Vel Set R")</code></pre>
+</details>
 
 <p><a href="../main.py" target="_blank">Open raw main.py file</a></p>
-
 </div>
 </div>
 
