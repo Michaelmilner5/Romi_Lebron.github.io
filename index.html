@@ -805,24 +805,29 @@ For reproducibility, the repository includes the source code, the portfolio site
 </section>
 
 <section id="analysis">
-<h2>Analysis and Results</h2>
+<h2>Representative Plots and Tuning Results</h2>
+<div class="card">
 
 <p>
-In addition to the final demonstration, we wanted to include a few representative plots that show how the robot actually behaved during testing and tuning. Instead of just adjusting parameters blindly, these plots gave us real feedback on what the robot was doing and helped guide our design decisions.
+In addition to the final demonstration, we wanted to include a few representative plots that show how the robot actually behaved during testing and tuning. These plots helped us move beyond trial-and-error by giving us direct feedback on line tracking, state estimation, and closed-loop motor performance.
+</p>
+
+<p>
+The line-follow centroid plot shows the weighted centroid signal used by the line-follow controller. This was useful because it let us see how well the robot stayed centered on the line over time and how much noise or drift was present in the sensing. The state estimator plot shows the reconstructed x-y motion of the robot based on logged observer states, which helped confirm that the estimator was producing reasonable motion trends rather than just reacting to raw sensor values. The step response plot was especially useful for controller tuning because it showed overshoot, settling time, and steady-state behavior in the wheel velocity loop. Together, these plots gave us a more objective way to tune the robot and understand what was happening during real runs.
 </p>
 
 <div class="figure-row">
   <div class="figure">
     <img src="images/images/line following centorid graph.png" alt="Line-follow centroid plot">
     <p class="figure-caption">
-      Figure 13. Line-follow centroid over time during a representative run. This plot shows the weighted centroid calculated from the line sensor array, which is the main signal used by the line-follow controller. Values near the center indicate that the robot is well aligned with the line, while larger deviations show moments where the robot drifted or had to correct its path. The noise and variation in this signal helped us understand how stable our sensing was and guided adjustments to base speed and controller gains.
+      Figure 13. Line-follow centroid over time during a representative run.
     </p>
   </div>
 
   <div class="figure">
     <img src="images/images/state estimator.png" alt="Estimator x-y path plot">
     <p class="figure-caption">
-      Figure 14. Estimated x-y path reconstructed from the state estimator and logged data. This plot represents the robot’s estimated motion over time based on encoder and IMU measurements. It shows that the system was not just reacting to sensor inputs, but also building a continuous estimate of its position. This was useful for verifying that the observer and dead-reckoning logic were producing realistic motion trends, even though some drift is expected without absolute position feedback.
+      Figure 14. Estimated x-y path reconstructed from the state estimator and logged data.
     </p>
   </div>
 </div>
@@ -830,16 +835,12 @@ In addition to the final demonstration, we wanted to include a few representativ
 <div class="figure">
   <img src="images/images/gain control.png" alt="Motor velocity step response plot">
   <p class="figure-caption">
-    Figure 15. Closed-loop motor step response used for PI controller tuning. This plot shows how the wheel velocity responds to a step change in commanded speed. The initial overshoot, settling time, and steady-state behavior were used to tune the proportional and integral gains. This confirms that the motor control was truly closed-loop and that performance improvements were based on measured system response rather than guesswork.
+    Figure 15. Closed-loop motor step response used for PI controller tuning.
   </p>
 </div>
 
-<p>
-Overall, these plots helped bridge the gap between theory and real-world behavior. They made it much easier to see how sensor noise, control tuning, and system dynamics affected performance, and allowed us to make more informed adjustments to improve stability and consistency.
-</p>
-
+</div>
 </section>
-
 <section id="implementation">
 <h2>Software Implementation</h2>
 <div class="card">
