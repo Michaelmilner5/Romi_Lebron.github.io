@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>task_line.py Documentation</title>
+<style>
+body{
+font-family: Arial, Helvetica, sans-serif;
+margin:0;
+background:#f4f6f8;
+color:#333;
+line-height:1.7;
+}
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+.card{
+background:white;
+padding:28px;
+border-radius:10px;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+h1,h2,h3{
+color:#1f2933;
+}
+a{
+color:#1f5fbf;
+text-decoration:none;
+font-weight:bold;
+}
+a:hover{
+text-decoration:underline;
+}
+code{
+background:#eef2f5;
+padding:2px 6px;
+border-radius:4px;
+}
+pre{
+background:#eef2f5;
+padding:16px;
+border-radius:8px;
+overflow-x:auto;
+}
+details{
+margin-top:18px;
+background:#f8fafc;
+border:1px solid #dbe4ea;
+border-radius:8px;
+padding:12px 16px;
+}
+summary{
+cursor:pointer;
+font-weight:bold;
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+}
+th, td{
+border:1px solid #dbe4ea;
+padding:8px;
+text-align:left;
+vertical-align:top;
+}
+th{
+background:#eef2f5;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<p><a href="../index.html">← Back to Main Portfolio</a></p>
+<div class="card">
+<h1>task_line.py</h1>
+
+<h2>Purpose</h2>
+<p>This file implements the line-following controller using centroid-based reflectance sensing and steering correction.</p>
+
+<h2>Main Role</h2>
+<p>task_line.py turns line-sensor measurements into left and right wheel commands so the robot can follow the printed path smoothly.</p>
+
+<h2>Key Responsibilities</h2>
+<ul>
+<li>Read normalized reflectance data from the line sensor array</li>
+<li>Estimate line position using a centroid-style method</li>
+<li>Apply filtering and confidence checks to the line-position estimate</li>
+<li>Compute steering correction using PID-style logic</li>
+<li>Clamp the steering command to prevent unrealistic wheel commands</li>
+<li>Write wheel-command Shares used by the motor tasks</li>
+</ul>
+
+<h2>Important Attributes / Shares / Variables</h2>
+<table>
+<tr><th>Name</th><th>Description</th></tr>
+<tr><td><code>sens</code></td><td>LineSensorArray object used to read the sensors</td></tr>
+<tr><td><code>v_base</code></td><td>Base forward-speed Share</td></tr>
+<tr><td><code>vL_cmd / vR_cmd</code></td><td>Left and right wheel command Shares</td></tr>
+<tr><td><code>lfEnable</code></td><td>Boolean Share enabling or disabling line following</td></tr>
+<tr><td><code>Kp / Ki / Kd</code></td><td>Steering control gains</td></tr>
+<tr><td><code>u_max</code></td><td>Maximum steering command magnitude</td></tr>
+<tr><td><code>max_min / sum_min</code></td><td>Confidence thresholds for valid line detection</td></tr>
+<tr><td><code>oversample</code></td><td>Number of samples used when reading the sensors</td></tr>
+<tr><td><code>den_min</code></td><td>Minimum denominator used in centroid computation</td></tr>
+<tr><td><code>pos_alpha</code></td><td>Low-pass filter coefficient for line position</td></tr>
+<tr><td><code>pos_deadband</code></td><td>Deadband applied to very small position errors</td></tr>
+<tr><td><code>last_pos</code></td><td>Most recent valid line position estimate</td></tr>
+</table>
+
+<details>
+<summary>Click to view representative logic</summary>
+<pre><code>if not self.lfEnable.get():
+    self._reset_pid()
+    yield self._state
+    continue</code></pre>
+</details>
+
+<h2>Why This File Matters</h2>
+<p>This file is the core of the robot’s path-tracking behavior. It is what allows the robot to follow the course instead of simply driving with fixed commands.</p>
+
+<p><a href="../task_line.py" target="_blank">Open raw task_line.py file</a></p>
+</div>
+</div>
+</body>
+</html>

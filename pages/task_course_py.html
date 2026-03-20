@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>task_course.py Documentation</title>
+<style>
+body{
+font-family: Arial, Helvetica, sans-serif;
+margin:0;
+background:#f4f6f8;
+color:#333;
+line-height:1.7;
+}
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+.card{
+background:white;
+padding:28px;
+border-radius:10px;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+h1,h2,h3{
+color:#1f2933;
+}
+a{
+color:#1f5fbf;
+text-decoration:none;
+font-weight:bold;
+}
+a:hover{
+text-decoration:underline;
+}
+code{
+background:#eef2f5;
+padding:2px 6px;
+border-radius:4px;
+}
+pre{
+background:#eef2f5;
+padding:16px;
+border-radius:8px;
+overflow-x:auto;
+}
+details{
+margin-top:18px;
+background:#f8fafc;
+border:1px solid #dbe4ea;
+border-radius:8px;
+padding:12px 16px;
+}
+summary{
+cursor:pointer;
+font-weight:bold;
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+}
+th, td{
+border:1px solid #dbe4ea;
+padding:8px;
+text-align:left;
+vertical-align:top;
+}
+th{
+background:#eef2f5;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<p><a href="../index.html">← Back to Main Portfolio</a></p>
+<div class="card">
+<h1>task_course.py</h1>
+
+<h2>Purpose</h2>
+<p>This file implements the high-level finite state machine for the obstacle course.</p>
+
+<h2>Main Role</h2>
+<p>task_course.py coordinates the full autonomous behavior of the robot. It decides when the robot should line-follow, drive straight, turn, back up, or stop based on course progress and sensor events.</p>
+
+<h2>Key Responsibilities</h2>
+<ul>
+<li>Define named states for the full course sequence</li>
+<li>Enable and disable line-follow mode at the right times</li>
+<li>Command direct wheel velocities for straight motion, turns, and backup maneuvers</li>
+<li>Change gains and base speed depending on the phase of the course</li>
+<li>Use measured wheel travel to trigger state transitions</li>
+<li>Monitor the course-enable and bump-event Shares and respond safely</li>
+</ul>
+
+<h2>Important Attributes / Shares / Variables</h2>
+<table>
+<tr><th>Name</th><th>Description</th></tr>
+<tr><td><code>_state</code></td><td>Current finite-state-machine state</td></tr>
+<tr><td><code>_courseEnable</code></td><td>Share that enables or disables the full course</td></tr>
+<tr><td><code>_bumpEvent</code></td><td>Share indicating that a bump event has occurred</td></tr>
+<tr><td><code>_leftMotorGo / _rightMotorGo</code></td><td>Motor enable Shares</td></tr>
+<tr><td><code>_velL / _velR</code></td><td>Direct left and right velocity command Shares</td></tr>
+<tr><td><code>_lfEnable</code></td><td>Line-follow enable Share</td></tr>
+<tr><td><code>_vBase</code></td><td>Base line-follow speed Share</td></tr>
+<tr><td><code>_Kp / _Ki</code></td><td>Gain Shares adjusted during different phases</td></tr>
+<tr><td><code>_seg_sL0 / _seg_sR0</code></td><td>Stored wheel displacement at the start of a segment</td></tr>
+<tr><td><code>_post_cup</code></td><td>Internal flag for cup-related behavior if used</td></tr>
+</table>
+
+<details>
+<summary>Click to view representative logic</summary>
+<pre><code>elif self._state == S2_FAST_LINE:
+    if not self._courseEnable.get():
+        self._stop()
+        self._clear_bump_event()
+        self._state = S1_IDLE
+        yield self._state
+        continue</code></pre>
+</details>
+
+<h2>Why This File Matters</h2>
+<p>This file is one of the most important in the project because it gives the robot a complete behavior sequence instead of isolated motions. It is the clearest expression of the overall autonomy strategy.</p>
+
+<p><a href="../task_course.py" target="_blank">Open raw task_course.py file</a></p>
+</div>
+</div>
+</body>
+</html>

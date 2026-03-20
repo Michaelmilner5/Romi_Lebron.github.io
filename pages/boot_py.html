@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>boot.py Documentation</title>
+<style>
+body{
+font-family: Arial, Helvetica, sans-serif;
+margin:0;
+background:#f4f6f8;
+color:#333;
+line-height:1.7;
+}
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+.card{
+background:white;
+padding:28px;
+border-radius:10px;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+h1,h2,h3{
+color:#1f2933;
+}
+a{
+color:#1f5fbf;
+text-decoration:none;
+font-weight:bold;
+}
+a:hover{
+text-decoration:underline;
+}
+code{
+background:#eef2f5;
+padding:2px 6px;
+border-radius:4px;
+}
+pre{
+background:#eef2f5;
+padding:16px;
+border-radius:8px;
+overflow-x:auto;
+}
+details{
+margin-top:18px;
+background:#f8fafc;
+border:1px solid #dbe4ea;
+border-radius:8px;
+padding:12px 16px;
+}
+summary{
+cursor:pointer;
+font-weight:bold;
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+}
+th, td{
+border:1px solid #dbe4ea;
+padding:8px;
+text-align:left;
+vertical-align:top;
+}
+th{
+background:#eef2f5;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<p><a href="../index.html">← Back to Main Portfolio</a></p>
+<div class="card">
+<h1>boot.py</h1>
+
+<h2>Purpose</h2>
+<p>This is the standard MicroPython boot file included with the project.</p>
+
+<h2>Main Role</h2>
+<p>It is mostly a support file that documents or enables boot-time configuration options.</p>
+
+<h2>Key Responsibilities</h2>
+<ul>
+<li>Run at boot before main.py</li>
+<li>Provide placeholders for USB and startup configuration</li>
+</ul>
+
+<h2>Important Attributes / Shares / Variables</h2>
+<table>
+<tr><th>Name</th><th>Description</th></tr>
+<tr><td><code>machine / pyb imports</code></td><td>Boot-time module imports</td></tr>
+<tr><td><code>commented options</code></td><td>Examples for USB mode and startup-script selection</td></tr>
+</table>
+
+<details>
+<summary>Click to view representative logic</summary>
+<pre><code>#pyb.main(&#x27;main.py&#x27;)
+#pyb.usb_mode(&#x27;VCP+MSC&#x27;)</code></pre>
+</details>
+
+<h2>Why This File Matters</h2>
+<p>This file matters because it is part of the final software package even though the main project logic lives elsewhere.</p>
+
+<p><a href="../boot.py" target="_blank">Open raw boot.py file</a></p>
+</div>
+</div>
+</body>
+</html>

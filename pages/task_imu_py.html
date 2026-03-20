@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>task_imu.py Documentation</title>
+<style>
+body{
+font-family: Arial, Helvetica, sans-serif;
+margin:0;
+background:#f4f6f8;
+color:#333;
+line-height:1.7;
+}
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px 20px;
+}
+.card{
+background:white;
+padding:28px;
+border-radius:10px;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+h1,h2,h3{
+color:#1f2933;
+}
+a{
+color:#1f5fbf;
+text-decoration:none;
+font-weight:bold;
+}
+a:hover{
+text-decoration:underline;
+}
+code{
+background:#eef2f5;
+padding:2px 6px;
+border-radius:4px;
+}
+pre{
+background:#eef2f5;
+padding:16px;
+border-radius:8px;
+overflow-x:auto;
+}
+details{
+margin-top:18px;
+background:#f8fafc;
+border:1px solid #dbe4ea;
+border-radius:8px;
+padding:12px 16px;
+}
+summary{
+cursor:pointer;
+font-weight:bold;
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+}
+th, td{
+border:1px solid #dbe4ea;
+padding:8px;
+text-align:left;
+vertical-align:top;
+}
+th{
+background:#eef2f5;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<p><a href="../index.html">← Back to Main Portfolio</a></p>
+<div class="card">
+<h1>task_imu.py</h1>
+
+<h2>Purpose</h2>
+<p>This file reads and conditions heading and yaw-rate data from the BNO055 IMU.</p>
+
+<h2>Main Role</h2>
+<p>task_imu.py provides clean orientation information to the rest of the robot, especially the observer and debugging tools.</p>
+
+<h2>Key Responsibilities</h2>
+<ul>
+<li>Read heading and yaw rate from the IMU</li>
+<li>Maintain a continuous heading through wraparound using angle unwrapping</li>
+<li>Low-pass filter yaw-rate measurements</li>
+<li>Reject unrealistic yaw-rate spikes</li>
+<li>Support loading and saving IMU calibration data</li>
+<li>Zero or rezero heading when needed</li>
+</ul>
+
+<h2>Important Attributes / Shares / Variables</h2>
+<table>
+<tr><th>Name</th><th>Description</th></tr>
+<tr><td><code>imu</code></td><td>BNO055 driver object</td></tr>
+<tr><td><code>psi / psiDot</code></td><td>Output Shares for heading and yaw rate</td></tr>
+<tr><td><code>_psi0</code></td><td>Heading zero offset</td></tr>
+<tr><td><code>_psi_prev</code></td><td>Previous raw heading value used for unwrapping</td></tr>
+<tr><td><code>_psi_cont</code></td><td>Continuous unwrapped heading</td></tr>
+<tr><td><code>_r_filt</code></td><td>Filtered yaw-rate state</td></tr>
+<tr><td><code>_r_alpha</code></td><td>Low-pass filter coefficient for yaw-rate filtering</td></tr>
+<tr><td><code>_calib_file</code></td><td>Calibration file used to save and load coefficients</td></tr>
+<tr><td><code>_yaw_lim</code></td><td>Maximum allowed yaw rate</td></tr>
+<tr><td><code>_yaw_spike_dps</code></td><td>Threshold for rejecting implausible spikes</td></tr>
+</table>
+
+<details>
+<summary>Click to view representative logic</summary>
+<pre><code>self._psi_prev = 0.0
+self._psi_cont = 0.0
+self._r_filt = 0.0
+self._r_alpha = 0.25</code></pre>
+</details>
+
+<h2>Why This File Matters</h2>
+<p>This file matters because raw IMU data is often noisy or wrapped in inconvenient ways. This task turns that data into a usable signal for estimation and debugging.</p>
+
+<p><a href="../task_imu.py" target="_blank">Open raw task_imu.py file</a></p>
+</div>
+</div>
+</body>
+</html>
