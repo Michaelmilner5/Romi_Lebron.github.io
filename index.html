@@ -267,6 +267,16 @@ background:#d4e7ff;
 transform:translateY(-1px);
 }
 
+.repo-button {
+  display:inline-block;
+  padding:10px 14px;
+  background:#e8f1ff;
+  border-radius:6px;
+  text-decoration:none;
+  color:#1f2933 !important;
+  font-weight:bold;
+}
+  
 .prefix{
 color:#9aa5b1;
 font-weight:400;
@@ -809,38 +819,54 @@ For reproducibility, the repository includes the source code, the portfolio site
 <div class="card">
 
 <p>
-In addition to the final demonstration, we wanted to include a few representative plots that show how the robot actually behaved during testing and tuning. These plots helped us move beyond trial-and-error by giving us direct feedback on line tracking, state estimation, and closed-loop motor performance.
+In addition to the final demonstration, we included a few representative plots from testing and tuning. These helped us understand how the robot was behaving in real time and allowed us to make more informed adjustments instead of relying on trial-and-error.
 </p>
+
+<!-- ===================== PLOT 1 ===================== -->
+<h3>Line-Follow Centroid Behavior</h3>
 
 <p>
-The line-follow centroid plot shows the weighted centroid signal used by the line-follow controller. This was useful because it let us see how well the robot stayed centered on the line over time and how much noise or drift was present in the sensing. The state estimator plot shows the reconstructed x-y motion of the robot based on logged observer states, which helped confirm that the estimator was producing reasonable motion trends rather than just reacting to raw sensor values. The step response plot was especially useful for controller tuning because it showed overshoot, settling time, and steady-state behavior in the wheel velocity loop. Together, these plots gave us a more objective way to tune the robot and understand what was happening during real runs.
+This plot shows the weighted centroid signal used by the line-follow controller over time. The centroid represents where the robot “thinks” the line is relative to its center. When the values stay near the desired range, the robot is tracking the line well. Larger deviations indicate moments where the robot drifted, encountered curvature, or had to correct its path. This plot was especially useful for tuning base speed and controller gains while also revealing how much noise was present in the sensor readings.
 </p>
 
-<div class="figure-row">
-  <div class="figure">
-    <img src="images/images/line following centorid graph.png" alt="Line-follow centroid plot">
-    <p class="figure-caption">
-      Figure 3. Line-follow centroid over time during a representative run.
-    </p>
-  </div>
-
-  <div class="figure">
-    <img src="images/images/state estimator.png" alt="Estimator x-y path plot">
-    <p class="figure-caption">
-      Figure 4. Estimated x-y path reconstructed from the state estimator and logged data.
-    </p>
-  </div>
+<div class="figure">
+  <img src="images/images/line following centorid graph.png" alt="Line-follow centroid plot">
+  <p class="figure-caption">
+    Figure 3. Line-follow centroid over time during a representative run.
+  </p>
 </div>
+
+<!-- ===================== PLOT 2 ===================== -->
+<h3>State Estimator Path Reconstruction</h3>
+
+<p>
+This plot shows the estimated x-y trajectory of the robot based on the state estimator. Instead of just reacting to sensor inputs, the robot continuously estimated its position using encoder and IMU data. The shape of the path gives a visual sense of how the robot moved through the course and whether the estimator was producing reasonable results. While some drift is expected without absolute position feedback, the overall motion trends helped validate the observer design.
+</p>
+
+<div class="figure">
+  <img src="images/images/state estimator.png" alt="Estimator x-y path plot">
+  <p class="figure-caption">
+    Figure 4. Estimated x-y path reconstructed from the state estimator.
+  </p>
+</div>
+
+<!-- ===================== PLOT 3 ===================== -->
+<h3>Motor Velocity Step Response</h3>
+
+<p>
+This plot shows the closed-loop response of the motor velocity controller to a step input. It was used to tune the PI controller gains by observing overshoot, settling time, and steady-state behavior. A well-tuned response reaches the desired speed quickly without excessive oscillation. This confirmed that the motor control was operating in closed-loop and that improvements were based on measured system performance rather than guesswork.
+</p>
 
 <div class="figure">
   <img src="images/images/gain control.png" alt="Motor velocity step response plot">
   <p class="figure-caption">
-    Figure 5. Closed-loop motor step response used for PI controller tuning.
+    Figure 5. Closed-loop motor step response used for PI tuning.
   </p>
 </div>
 
 </div>
 </section>
+  
 <section id="implementation">
 <h2>Software Implementation</h2>
 <div class="card">
