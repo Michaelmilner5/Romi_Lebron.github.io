@@ -203,7 +203,7 @@ margin-top:40px;
 <header>
 <h1>Autonomous Romi Robot Project</h1>
 <p>
-Final portfolio documenting the design, implementation, and testing of an autonomous Romi robot developed to complete a multi-stage obstacle course using line sensors, encoders, bump switches, an IMU, and observer-based state estimation.
+Project portfolio by Tyler Lum and Michael Milner documenting the design, implementation, and testing of an autonomous Romi robot developed to complete a multi-stage obstacle course using line sensors, encoders, bump switches, an IMU, and observer-based state estimation.
 </p>
 </header>
 
@@ -218,6 +218,7 @@ Final portfolio documenting the design, implementation, and testing of an autono
 <a href="#media">Media</a>
 <a href="#video">Video</a>
 <a href="#repository">Repository</a>
+<a href="#external">External Reference</a>
 </nav>
 
 <div class="container">
@@ -352,7 +353,7 @@ The bump switches are configured so that they normally read HIGH and transition 
 </p>
 
 <p>
-Overall, the electrical design was aimed at reliability and clarity. A robot like this is only as good as its sensing and actuation pathways, so making sure the hardware connections were stable and logically organized was just as important as the code itself.
+Overall, the electrical design was aimed at reliability and clarity. A robot like this is only as good as its sensing and actuation pathways, so making sure the hardware connections were stable and logically organized was just as important as the code itself. As part of the final documentation package, we also created a full wiring diagram for the robot so that the system could be more easily understood, debugged, and reproduced by another student or project team.
 </p>
 
 <div class="figure">
@@ -475,10 +476,6 @@ Bump switches → <code>task_bump.py</code> → stop condition and safety respon
 </p>
 </details>
 
-<div class="figure-placeholder">
-<b>Suggested inserts for this section:</b> state machine diagram, task architecture diagram, a screenshot of your scheduler setup, and one or two short code snippets from <code>main.py</code> or <code>task_line.py</code>.
-</div>
-
 </div>
 </section>
 
@@ -588,11 +585,6 @@ This file implements the cooperative scheduler itself. It defines the task objec
 This file stores the discrete-time observer matrices used by the observer task. It directly represents the mathematical model of the robot.
 </p>
 
-<h4><code>make_observer_matrices.py</code></h4>
-<p>
-This file is an offline support script used to generate the observer matrices from a continuous-time model using SciPy and NumPy tools.
-</p>
-
 <h3>Startup and Support Files</h3>
 
 <h4><code>boot.py</code></h4>
@@ -603,7 +595,7 @@ This file is the standard MicroPython boot file. It is mostly a support file, bu
 <h3>How the Files Work Together</h3>
 
 <p>
-The hardware interface classes provide access to the motors, encoders, line sensors, and IMU. The task infrastructure files provide the scheduler and communication tools. The task files sit on top of those layers and implement the actual robot behavior: reading sensors, estimating states, controlling motion, detecting events, and responding to user commands. Finally, the support files such as the observer matrix generator and boot file complete the overall software package.
+The hardware interface classes provide access to the motors, encoders, line sensors, and IMU. The task infrastructure files provide the scheduler and communication tools. The task files sit on top of those layers and implement the actual robot behavior: reading sensors, estimating states, controlling motion, detecting events, and responding to user commands. Finally, the support files such as the observer matrix file and boot file complete the overall software package.
 </p>
 
 <details>
@@ -741,11 +733,6 @@ The files below link to dedicated documentation pages for each source file. Each
 </li>
 
 <li>
-<a href="pages/make_observer_matrices_py.html" target="_blank"><b>make_observer_matrices.py</b></a> – Offline support script used to generate observer matrices from a continuous-time model.
-<a href="make_observer_matrices.py" target="_blank">[Open raw file]</a>
-</li>
-
-<li>
 <a href="pages/boot_py.html" target="_blank"><b>boot.py</b></a> – Standard MicroPython boot file included as part of the final software package.
 <a href="boot.py" target="_blank">[Open raw file]</a>
 </li>
@@ -825,10 +812,6 @@ This project also reinforced how important testing and iteration are. A lot of t
 <li>Retune the observer poles for faster convergence, as noted in the observer matrix comments</li>
 </ul>
 
-<div class="figure-placeholder">
-<b>Suggested inserts for this section:</b> plots of velocity, line position, observer estimates, or a table comparing early behavior versus final behavior.
-</div>
-
 </div>
 </section>
 
@@ -840,14 +823,13 @@ This project also reinforced how important testing and iteration are. A lot of t
 This section is where the portfolio becomes much easier to understand visually. Good photos and diagrams make a huge difference because they show the actual hardware decisions behind the written report.
 </p>
 
-<h3>Recommended Images to Include</h3>
+<h3>Included Visual Documentation</h3>
 <ul>
 <li>Full assembled robot</li>
 <li>Underside view showing line sensor placement</li>
 <li>Front view showing bump switches</li>
-<li>Close-up of IMU placement</li>
-<li>Wiring diagram</li>
-<li>Task architecture or state machine diagram</li>
+<li>Additional hardware view of the completed assembly</li>
+<li>Full wiring diagram for the robot electrical system</li>
 </ul>
 
 <div class="figure-row">
@@ -927,7 +909,6 @@ The full project repository contains the source code, supporting documentation, 
 <a href="task_share.py" target="_blank">task_share.py</a>
 <a href="cotask.py" target="_blank">cotask.py</a>
 <a href="observer_matrices.py" target="_blank">observer_matrices.py</a>
-<a href="make_observer_matrices.py" target="_blank">make_observer_matrices.py</a>
 <a href="boot.py" target="_blank">boot.py</a>
 </div>
 
@@ -940,17 +921,28 @@ The full project repository contains the source code, supporting documentation, 
 <a href="pages/task_observer_py.html" target="_blank">task_observer.py docs</a>
 </div>
 
-<p>
-If your files are inside a folder such as <code>src/</code>, just change the links above to paths like <code>src/main.py</code>.
-</p>
-
 <h3>Repository Link</h3>
-<a class="button-link" href="https://github.com/REPLACE_WITH_YOUR_USERNAME/REPLACE_WITH_YOUR_REPO" target="_blank">Open Full GitHub Repository</a>
+<a class="button-link" href="https://github.com/tylerlum40portfolio/Romi_Lebron.github.io" target="_blank">Open Full GitHub Repository</a>
 
 <h3>Reproducibility</h3>
 <p>
-To make the project reproducible, the repository should also include this portfolio website, a short README, the full source code, any diagrams or figures used in the report, and any mechanical or electrical design files you have available. The more complete the repository is, the easier it is for someone else to understand how the robot was built and how the system operates.
+To make the project reproducible, the repository includes the portfolio website, documentation pages, source code, figures, calibration files, and supporting robot software files needed to understand the full system design and implementation.
 </p>
+
+</div>
+</section>
+
+<section id="external">
+<h2>External Reference</h2>
+<div class="card">
+
+<p>
+For external reference related to the project and course support, the following contact is included:
+</p>
+
+<ul>
+<li><b>Charlie Refvem</b> – <a href="mailto:crefvem@calpoly.edu">crefvem@calpoly.edu</a></li>
+</ul>
 
 </div>
 </section>
@@ -958,7 +950,7 @@ To make the project reproducible, the repository should also include this portfo
 </div>
 
 <footer>
-<p>Romi Robot Project | Final Portfolio Website</p>
+<p>Romi Robot Project | Tyler Lum and Michael Milner</p>
 </footer>
 
 </body>
