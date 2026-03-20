@@ -71,12 +71,12 @@ padding-left:24px;
 
 <h2>Purpose</h2>
 <p>
-This file is the main integration point for the entire robot. It imports all required modules, initializes the hardware interfaces, creates the shared variables used for inter-task communication, instantiates the task objects, adds them to the cooperative scheduler, and then continuously runs the robot through round-robin task scheduling. In practical terms, <code>main.py</code> is what turns the individual subsystems into one complete autonomous robot. :contentReference[oaicite:1]{index=1}
+This file is the main integration point for the entire robot. It imports all required modules, initializes the hardware interfaces, creates the shared variables used for inter-task communication, instantiates the task objects, adds them to the cooperative scheduler, and then continuously runs the robot through round-robin task scheduling. In practical terms, <code>main.py</code> is what turns the individual subsystems into one complete autonomous robot.
 </p>
 
 <h2>Main Role in the Project</h2>
 <p>
-While the detailed behavior of the robot lives inside separate files such as <code>task_motor.py</code>, <code>task_line.py</code>, <code>task_imu.py</code>, and <code>task_course.py</code>, this file is responsible for wiring everything together. It creates the exact objects used by the system, determines how those tasks communicate, and defines how often each task runs. Because of that, it is one of the most important files in the entire project. :contentReference[oaicite:2]{index=2}
+While the detailed behavior of the robot lives inside separate files such as <code>task_motor.py</code>, <code>task_line.py</code>, <code>task_imu.py</code>, and <code>task_course.py</code>, this file is responsible for wiring everything together. It creates the exact objects used by the system, determines how those tasks communicate, and defines how often each task runs. Because of that, it is one of the most important files in the entire project.
 </p>
 
 <h2>Hardware Initialization Performed in This File</h2>
@@ -124,7 +124,7 @@ A major part of <code>main.py</code> is the creation of Shares. These are what a
 
 <h2>Default Initialization Values</h2>
 <p>
-This file also establishes the startup state of the full robot. The PI gains are initialized to <code>Kp = 0.06</code> and <code>Ki = 0.6</code>, the line-follow base speed is initialized to <code>220.0</code>, and all enable flags such as line-following, course mode, estimator streaming, bump event status, and motor-go flags are set to false initially. This ensures the robot powers up in a safe and predictable state rather than immediately starting to move. :contentReference[oaicite:3]{index=3}
+This file also establishes the startup state of the full robot. The PI gains are initialized to <code>Kp = 0.06</code> and <code>Ki = 0.6</code>, the line-follow base speed is initialized to <code>220.0</code>, and all enable flags such as line-following, course mode, estimator streaming, bump event status, and motor-go flags are set to false initially. This ensures the robot powers up in a safe and predictable state rather than immediately starting to move.
 </p>
 
 <h2>Task Objects Created</h2>
@@ -161,12 +161,12 @@ This file adds all major tasks to the cooperative scheduler using the <code>Task
 </ul>
 
 <p>
-This priority structure is important. The bump task has the highest priority because safety and immediate collision response matter the most. The motor tasks also run frequently because wheel control needs to be updated quickly. Line following runs slightly slower, and user interaction or garbage collection can run at lower urgency. :contentReference[oaicite:4]{index=4}
+This priority structure is important. The bump task has the highest priority because safety and immediate collision response matter the most. The motor tasks also run frequently because wheel control needs to be updated quickly. Line following runs slightly slower, and user interaction or garbage collection can run at lower urgency.
 </p>
 
 <h2>Main Runtime Loop</h2>
 <p>
-At the bottom of the file, the system enters an infinite loop and repeatedly calls <code>task_list.rr_sched()</code>. This is what keeps the cooperative scheduler running. If a <code>KeyboardInterrupt</code> occurs, both motors are disabled before the program exits, which provides a clean and safe shutdown procedure. After exiting, the file prints task and share information for debugging. :contentReference[oaicite:5]{index=5}
+At the bottom of the file, the system enters an infinite loop and repeatedly calls <code>task_list.rr_sched()</code>. This is what keeps the cooperative scheduler running. If a <code>KeyboardInterrupt</code> occurs, both motors are disabled before the program exits, which provides a clean and safe shutdown procedure. After exiting, the file prints task and share information for debugging.
 </p>
 
 <h2>Why This File Matters</h2>
