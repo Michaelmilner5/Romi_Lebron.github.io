@@ -805,7 +805,7 @@ For reproducibility, the repository includes the source code, the portfolio site
 </section>
 
 <section id="analysis">
-<h3>Representative Plots and Tuning Results</h3>
+<h2>Analysis and Results</h2>
 
 <p>
 In addition to the final demonstration, we wanted to include a few representative plots that show how the robot actually behaved during testing and tuning. Instead of just adjusting parameters blindly, these plots gave us real feedback on what the robot was doing and helped guide our design decisions.
@@ -932,7 +932,7 @@ The bump task continuously monitors the two front switches. It uses edge detecti
 The user interface task is another major strength of the project. Through the serial interface, the user can print the help menu, update gains, set the line-follow base speed, calibrate the line sensors on white and black surfaces, print sensor data, start line following, stop the system, trigger IMU calibration, save calibration data, and inspect observer values. This made testing and debugging much more efficient, because it removed the need to constantly hard-code parameters during development.
 </p>
 
-<h3>Human Reflection on the Software</h3>
+<h3> Reflection on the Software</h3>
 
 <p>
 One of the biggest lessons from the software side of this project was how much easier it is to manage a complicated robot when the code is modular. At first, it is tempting to write everything in one place because it feels faster. But once multiple sensors and behaviors are involved, that approach becomes hard to maintain very quickly. Splitting the system into tasks made the code cleaner, but more importantly, it made the robot easier to understand during debugging.
