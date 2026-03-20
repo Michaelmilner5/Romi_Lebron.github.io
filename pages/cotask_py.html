@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>cotask.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,39 +84,17 @@ background:#eef2f5;
 <h1>cotask.py</h1>
 
 <h2>Purpose</h2>
-<p>This file implements the cooperative scheduler and Task class.</p>
-
+<p>Defines the Task class and cooperative scheduler used to run the full multitasking system.</p>
 <h2>Main Role</h2>
-<p>It is the timing backbone of the entire robot software system.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Wrap generator-based tasks in Task objects</li>
-<li>Schedule tasks by period and readiness</li>
-<li>Support priorities, profiling, and tracing</li>
-<li>Maintain the task list used in round-robin execution</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>Task</code></td><td>Class representing one scheduled task</td></tr>
-<tr><td><code>TaskList</code></td><td>Container for all tasks</td></tr>
-<tr><td><code>priority</code></td><td>Scheduling priority</td></tr>
-<tr><td><code>period</code></td><td>Execution period in microseconds</td></tr>
-<tr><td><code>go_flag</code></td><td>Flag used to force a task ready</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>if self.ready():
-    curr_state = next(self._run_gen)</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because it makes the modular multitasking software architecture possible without a full RTOS.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../cotask.py" target="_blank">Open raw cotask.py file</a></p>
+
 </div>
 </div>
 </body>

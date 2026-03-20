@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>encoder.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,42 +84,17 @@ background:#eef2f5;
 <h1>encoder.py</h1>
 
 <h2>Purpose</h2>
-<p>This file defines the encoder class for quadrature position and velocity measurement.</p>
-
+<p>Defines the encoder class used to read wheel position and velocity while handling timer wraparound.</p>
 <h2>Main Role</h2>
-<p>It provides wheel motion feedback for both motor control and state estimation.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Configure timer channels in encoder mode</li>
-<li>Track cumulative position</li>
-<li>Handle counter wraparound</li>
-<li>Estimate velocity from position change and time step</li>
-<li>Support zeroing</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>tim</code></td><td>Timer configured for encoder mode</td></tr>
-<tr><td><code>position</code></td><td>Cumulative encoder position</td></tr>
-<tr><td><code>delta</code></td><td>Most recent count change</td></tr>
-<tr><td><code>dt</code></td><td>Most recent sample interval</td></tr>
-<tr><td><code>prev_count</code></td><td>Previous timer count</td></tr>
-<tr><td><code>prev_time</code></td><td>Previous timestamp</td></tr>
-<tr><td><code>half_period</code></td><td>Half the counter period used in wraparound handling</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>def get_velocity(self):
-    return self.delta / self.dt if self.dt &gt; 0 else 0.0</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because encoder feedback is essential for repeatable wheel control and accurate observer inputs.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../encoder.py" target="_blank">Open raw encoder.py file</a></p>
+
 </div>
 </div>
 </body>

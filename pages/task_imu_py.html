@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_imu.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,48 +84,58 @@ background:#eef2f5;
 <h1>task_imu.py</h1>
 
 <h2>Purpose</h2>
-<p>This file reads and conditions heading and yaw-rate data from the BNO055 IMU.</p>
-
+<p>
+This file implements the IMU task. It reads heading and yaw rate from the BNO055, unwraps the heading so it remains continuous across angle rollover, filters the yaw rate, and supports IMU calibration load/save behavior.
+</p>
 <h2>Main Role</h2>
-<p>task_imu.py provides clean orientation information to the rest of the robot, especially the observer and debugging tools.</p>
-
+<p>
+The task provides clean orientation information to the rest of the robot, especially the observer and the serial diagnostics.
+</p>
 <h2>Key Responsibilities</h2>
 <ul>
-<li>Read heading and yaw rate from the IMU</li>
-<li>Maintain a continuous heading through wraparound using angle unwrapping</li>
-<li>Low-pass filter yaw-rate measurements</li>
-<li>Reject unrealistic yaw-rate spikes</li>
-<li>Support loading and saving IMU calibration data</li>
-<li>Zero or rezero heading when needed</li>
+<li>Read heading from the IMU</li>
+<li>Read yaw rate from the IMU gyro</li>
+<li>Unwrap heading to avoid discontinuities at 0/360 degrees</li>
+<li>Filter yaw-rate values</li>
+<li>Reject unrealistic spikes</li>
+<li>Load saved calibration coefficients if available</li>
+<li>Save calibration coefficients after successful calibration</li>
+<li>Publish heading and yaw-rate Shares</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>imu</code></td><td>BNO055 driver object</td></tr>
-<tr><td><code>psi / psiDot</code></td><td>Output Shares for heading and yaw rate</td></tr>
-<tr><td><code>_psi0</code></td><td>Heading zero offset</td></tr>
-<tr><td><code>_psi_prev</code></td><td>Previous raw heading value used for unwrapping</td></tr>
-<tr><td><code>_psi_cont</code></td><td>Continuous unwrapped heading</td></tr>
-<tr><td><code>_r_filt</code></td><td>Filtered yaw-rate state</td></tr>
-<tr><td><code>_r_alpha</code></td><td>Low-pass filter coefficient for yaw-rate filtering</td></tr>
-<tr><td><code>_calib_file</code></td><td>Calibration file used to save and load coefficients</td></tr>
-<tr><td><code>_yaw_lim</code></td><td>Maximum allowed yaw rate</td></tr>
-<tr><td><code>_yaw_spike_dps</code></td><td>Threshold for rejecting implausible spikes</td></tr>
+<tr><td><code>imu</code></td><td>BNO055 driver object.</td></tr>
+<tr><td><code>psi</code></td><td>Output Share for measured heading.</td></tr>
+<tr><td><code>psiDot</code></td><td>Output Share for measured yaw rate.</td></tr>
+<tr><td><code>imuCalReq</code></td><td>Share used to request calibration actions.</td></tr>
+<tr><td><code>_unwrap</code></td><td>Enables continuous-angle heading unwrapping.</td></tr>
+<tr><td><code>_calib_file</code></td><td>Filename used to store calibration coefficients.</td></tr>
+<tr><td><code>_yaw_lim</code></td><td>Maximum allowed yaw-rate magnitude.</td></tr>
+<tr><td><code>_yaw_spike_dps</code></td><td>Spike threshold in degrees per second.</td></tr>
+<tr><td><code>_psi_prev</code>, <code>_psi_cont</code></td><td>Internal variables used to maintain continuous heading.</td></tr>
+<tr><td><code>_r_filt</code></td><td>Filtered yaw-rate state.</td></tr>
 </table>
-
+<h2>Important Methods / Behavior</h2>
+<table>
+<tr><th>Method / Logic</th><th>Description</th></tr>
+<tr><td>Heading unwrap</td><td>Maintains continuous heading rather than a wrapped 0–360 degree signal.</td></tr>
+<tr><td>Calibration load</td><td>Attempts to load stored coefficients from file at startup or on request.</td></tr>
+<tr><td>Calibration save</td><td>Saves updated coefficients when calibration is complete.</td></tr>
+<tr><td>Spike rejection</td><td>Rejects unrealistic gyro spikes before publishing values.</td></tr>
+</table>
 <details>
-<summary>Click to view representative logic</summary>
-<pre><code>self._psi_prev = 0.0
-self._psi_cont = 0.0
-self._r_filt = 0.0
-self._r_alpha = 0.25</code></pre>
+<summary>Click to view engineering notes</summary>
+<p>
+Heading unwrapping is especially important for control and estimation. If the robot turns through 359 degrees to 0 degrees, a raw wrapped signal would jump abruptly. This file prevents that issue by maintaining a continuous heading state.
+</p>
 </details>
-
 <h2>Why This File Matters</h2>
-<p>This file matters because raw IMU data is often noisy or wrapped in inconvenient ways. This task turns that data into a usable signal for estimation and debugging.</p>
-
+<p>
+This file turns raw IMU data into something usable by the observer and by the debugging interface. Without it, heading and yaw-rate information would be less reliable and more difficult to interpret.
+</p>
 <p><a href="../task_imu.py" target="_blank">Open raw task_imu.py file</a></p>
+
 </div>
 </div>
 </body>

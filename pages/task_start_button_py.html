@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_start_button.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,40 +84,38 @@ background:#eef2f5;
 <h1>task_start_button.py</h1>
 
 <h2>Purpose</h2>
-<p>This file handles the physical start button used to start or stop the course.</p>
-
+<p>
+This file implements the physical start-button task. It debounces the user pushbutton, toggles the course-enable Share, and can clear bump events when beginning a new run.
+</p>
 <h2>Main Role</h2>
-<p>task_start_button.py provides debounced user control over the course-enable flag.</p>
-
+<p>
+It provides a clean hardware-based interface for starting or stopping the autonomous course without needing the serial console.
+</p>
 <h2>Key Responsibilities</h2>
 <ul>
-<li>Read the physical button input</li>
-<li>Apply debounce timing</li>
-<li>Toggle course-enable state</li>
-<li>Clear bump event when starting a new run</li>
+<li>Read the pushbutton input pin</li>
+<li>Apply debounce timing so one press is only counted once</li>
+<li>Toggle the course-enable Share</li>
+<li>Clear bump-event status when starting a new course run</li>
+<li>Print periodic heartbeat messages for debugging</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>_btn</code></td><td>Input pin for the start button</td></tr>
-<tr><td><code>_courseEnable</code></td><td>Share enabling the course FSM</td></tr>
-<tr><td><code>_bumpEvent</code></td><td>Optional bump-event Share cleared on start</td></tr>
-<tr><td><code>_prev</code></td><td>Previous button state</td></tr>
-<tr><td><code>_debounce</code></td><td>Debounce time in milliseconds</td></tr>
-<tr><td><code>_t_last</code></td><td>Last accepted press time</td></tr>
+<tr><td><code>_btn</code></td><td>Input pin object for the hardware pushbutton.</td></tr>
+<tr><td><code>_courseEnable</code></td><td>Share that enables or disables the obstacle-course routine.</td></tr>
+<tr><td><code>_bumpEvent</code></td><td>Optional Share cleared when starting a new run.</td></tr>
+<tr><td><code>_prev</code></td><td>Previous button state used for edge detection.</td></tr>
+<tr><td><code>_t_last</code></td><td>Timestamp of the last accepted button event.</td></tr>
+<tr><td><code>_debounce</code></td><td>Debounce interval in milliseconds.</td></tr>
+<tr><td><code>_hb_t</code></td><td>Heartbeat timer used for periodic debug printouts.</td></tr>
 </table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>if (self._prev == 1) and (val == 0):
-    if ticks_diff(now, self._t_last) &gt;= self._debounce:</code></pre>
-</details>
-
 <h2>Why This File Matters</h2>
-<p>This file matters because it provides a clean hardware control for starting and stopping the robot without needing a serial command.</p>
-
+<p>
+This file improves usability and repeatability by allowing the robot to be started from a physical button in a clean, debounced way. It also prevents stale bump events from affecting the next run.
+</p>
 <p><a href="../task_start_button.py" target="_blank">Open raw task_start_button.py file</a></p>
+
 </div>
 </div>
 </body>

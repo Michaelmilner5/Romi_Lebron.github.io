@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_observer.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,50 +84,58 @@ background:#eef2f5;
 <h1>task_observer.py</h1>
 
 <h2>Purpose</h2>
-<p>This file implements the discrete-time observer used to estimate robot state variables.</p>
-
+<p>
+This file implements the discrete-time observer task. It reads motor-input Shares, measured wheel displacement Shares, and IMU heading/yaw-rate Shares, then estimates forward position, heading, and wheel speeds. It can also stream those estimated states over UART.
+</p>
 <h2>Main Role</h2>
-<p>task_observer.py combines motor voltage inputs, wheel displacements, heading, and yaw rate to estimate forward position, heading, and wheel speeds.</p>
-
+<p>
+This task provides model-based state estimation. It goes beyond simply relaying measurements and instead uses a state-space update to estimate the robot’s internal motion state.
+</p>
 <h2>Key Responsibilities</h2>
 <ul>
-<li>Read measured motor voltages, wheel displacement, heading, and yaw rate</li>
-<li>Load discrete-time observer matrices from observer_matrices.py</li>
-<li>Update the internal state estimate each sample</li>
+<li>Read measured left/right wheel displacement</li>
+<li>Read measured heading and yaw rate</li>
+<li>Read left/right motor voltages</li>
+<li>Load observer matrices from <code>observer_matrices.py</code></li>
+<li>Update the estimated state vector every cycle</li>
 <li>Publish estimated forward position, heading, and wheel speeds</li>
-<li>Optionally stream estimated states through UART</li>
-<li>Support internal path integration for debugging output</li>
+<li>Optionally stream estimated-state data over UART</li>
+<li>Track estimated x-y path while streaming</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>uL / uR</code></td><td>Motor-voltage input Shares</td></tr>
-<tr><td><code>sL / sR</code></td><td>Measured wheel-displacement Shares</td></tr>
-<tr><td><code>psi / psiDot</code></td><td>Measured heading and yaw-rate Shares</td></tr>
-<tr><td><code>s_hat / psi_hat / wL_hat / wR_hat</code></td><td>Output estimated-state Shares</td></tr>
-<tr><td><code>_xhat</code></td><td>Internal estimated-state vector</td></tr>
-<tr><td><code>_Ad / _Bd</code></td><td>Discrete-time model matrices</td></tr>
-<tr><td><code>Ts</code></td><td>Observer sample time</td></tr>
-<tr><td><code>_stream_enabled</code></td><td>Whether UART state streaming is enabled</td></tr>
-<tr><td><code>_uart</code></td><td>UART interface used for streaming</td></tr>
-<tr><td><code>_x_path / _y_path</code></td><td>Integrated path estimate for debug output</td></tr>
+<tr><td><code>uL</code>, <code>uR</code></td><td>Input Shares for left and right motor voltage.</td></tr>
+<tr><td><code>sL</code>, <code>sR</code></td><td>Measured wheel displacement Shares.</td></tr>
+<tr><td><code>psi</code>, <code>psiDot</code></td><td>Measured heading and yaw-rate Shares.</td></tr>
+<tr><td><code>s_hat</code>, <code>psi_hat</code>, <code>wL_hat</code>, <code>wR_hat</code></td><td>Output Shares for the estimated states.</td></tr>
+<tr><td><code>_xhat</code></td><td>Internal estimated state vector.</td></tr>
+<tr><td><code>_Ad</code>, <code>_Bd</code></td><td>State-space matrices used for the observer update.</td></tr>
+<tr><td><code>_use_bd_full</code></td><td>Indicates whether the full input matrix form is being used.</td></tr>
+<tr><td><code>_stream_hz</code></td><td>Streaming rate for UART output.</td></tr>
+<tr><td><code>_x_path</code>, <code>_y_path</code></td><td>Integrated path values used during streamed output.</td></tr>
 </table>
-
+<h2>Important Methods / Behavior</h2>
+<table>
+<tr><th>Method / Logic</th><th>Description</th></tr>
+<tr><td><code>_load_matrices()</code></td><td>Attempts to import and validate observer matrices.</td></tr>
+<tr><td><code>_startup_print()</code></td><td>Prints a summary of observer startup status.</td></tr>
+<tr><td><code>_reset_stream_path()</code></td><td>Zeros the streamed x-y path and writes a header over UART.</td></tr>
+<tr><td><code>_maybe_stream_sample()</code></td><td>Streams one line of estimated-state data if streaming is enabled and enough time has elapsed.</td></tr>
+<tr><td>Fallback mode</td><td>If matrices are unavailable, falls back to a simpler estimate based on measured values.</td></tr>
+</table>
 <details>
-<summary>Click to view representative logic</summary>
-<pre><code>self.uL = uL_volts
-self.uR = uR_volts
-self.sL = sL_meas
-self.sR = sR_meas
-self.psi = psi_meas
-self.psiDot = psiDot_meas</code></pre>
+<summary>Click to view engineering notes</summary>
+<p>
+This file is one of the strongest demonstrations of controls theory in the project. It shows that the robot is not just reacting to measurements, but also estimating its internal state using a model-based approach.
+</p>
 </details>
-
 <h2>Why This File Matters</h2>
-<p>This file matters because it connects the final implementation directly to controls theory. It allows the robot to estimate motion in a model-based way instead of relying only on raw sensors.</p>
-
+<p>
+This file gives the project much more technical depth. It bridges the gap between raw sensing and state estimation, which is one of the clearest connections between the final robot and the theory covered in class.
+</p>
 <p><a href="../task_observer.py" target="_blank">Open raw task_observer.py file</a></p>
+
 </div>
 </div>
 </body>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>test_motor.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,34 +84,17 @@ background:#eef2f5;
 <h1>test_motor.py</h1>
 
 <h2>Purpose</h2>
-<p>This file directly tests motor operation outside the full multitasking framework.</p>
-
+<p>Simple motor test script used to verify motor-driver wiring and wheel response outside the full runtime system.</p>
 <h2>Main Role</h2>
-<p>It is used to confirm hardware-level motor and driver functionality.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Spin motors directly</li>
-<li>Verify driver wiring and PWM behavior</li>
-<li>Check that basic actuation works before full integration</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>motor objects</code></td><td>Direct motor-driver test objects</td></tr>
-<tr><td><code>effort values</code></td><td>Simple test commands sent to the motors</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code># direct motor test script</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because hardware-level sanity checks reduce debugging time later.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../test_motor.py" target="_blank">Open raw test_motor.py file</a></p>
+
 </div>
 </div>
 </body>

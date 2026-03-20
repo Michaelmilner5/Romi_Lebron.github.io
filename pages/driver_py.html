@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>driver.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,40 +84,17 @@ background:#eef2f5;
 <h1>driver.py</h1>
 
 <h2>Purpose</h2>
-<p>This file defines the low-level BNO055 driver class.</p>
-
+<p>Defines the BNO055 driver class and low-level IMU communication behavior.</p>
 <h2>Main Role</h2>
-<p>It handles raw I2C communication and exposes useful IMU operations to the higher-level IMU task.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Read and write BNO055 registers</li>
-<li>Verify the chip ID during initialization</li>
-<li>Set operating modes</li>
-<li>Read heading and gyro data</li>
-<li>Read and write calibration coefficients</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>i2c</code></td><td>I2C bus object</td></tr>
-<tr><td><code>addr</code></td><td>BNO055 device address</td></tr>
-<tr><td><code>_mode</code></td><td>Current operating mode</td></tr>
-<tr><td><code>REG_* constants</code></td><td>Register addresses used for communication</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>chip = self._read_u8(self.REG_CHIP_ID)
-if chip != 0xA0:
-    raise RuntimeError(...)</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because all IMU functionality depends on a reliable low-level sensor driver.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../driver.py" target="_blank">Open raw driver.py file</a></p>
+
 </div>
 </div>
 </body>

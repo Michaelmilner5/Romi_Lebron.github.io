@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_share.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,38 +84,17 @@ background:#eef2f5;
 <h1>task_share.py</h1>
 
 <h2>Purpose</h2>
-<p>This file defines the Share and Queue infrastructure used by the multitasking system.</p>
-
+<p>Defines Shares and Queues used for safe data communication between cooperative tasks.</p>
 <h2>Main Role</h2>
-<p>It provides the safe communication layer used by independent tasks.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Define the BaseShare parent class</li>
-<li>Implement Queue objects for buffered communication</li>
-<li>Implement Share objects for latest-value communication</li>
-<li>Maintain the global share list for diagnostics</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>share_list</code></td><td>Global list of all created shares and queues</td></tr>
-<tr><td><code>BaseShare</code></td><td>Base class for shared data objects</td></tr>
-<tr><td><code>Queue</code></td><td>Buffered FIFO communication object</td></tr>
-<tr><td><code>Share</code></td><td>Single latest-value shared object</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>class Queue (BaseShare):
-    ser_num = 0</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because the multitasking architecture depends on structured communication between tasks.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../task_share.py" target="_blank">Open raw task_share.py file</a></p>
+
 </div>
 </div>
 </body>

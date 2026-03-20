@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>boot.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,34 +84,17 @@ background:#eef2f5;
 <h1>boot.py</h1>
 
 <h2>Purpose</h2>
-<p>This is the standard MicroPython boot file included with the project.</p>
-
+<p>Standard MicroPython boot file included with the final software package.</p>
 <h2>Main Role</h2>
-<p>It is mostly a support file that documents or enables boot-time configuration options.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Run at boot before main.py</li>
-<li>Provide placeholders for USB and startup configuration</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>machine / pyb imports</code></td><td>Boot-time module imports</td></tr>
-<tr><td><code>commented options</code></td><td>Examples for USB mode and startup-script selection</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>#pyb.main(&#x27;main.py&#x27;)
-#pyb.usb_mode(&#x27;VCP+MSC&#x27;)</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because it is part of the final software package even though the main project logic lives elsewhere.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../boot.py" target="_blank">Open raw boot.py file</a></p>
+
 </div>
 </div>
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>task_bump.py Documentation</title>
+<title>make_observer_matrices.py Documentation</title>
 <style>
 
 body{
@@ -81,28 +81,19 @@ padding-left:24px;
 <div class="container">
 <p><a href="../index.html">← Back to Main Portfolio</a></p>
 <div class="card">
-<h1>task_bump.py</h1>
+<h1>make_observer_matrices.py</h1>
 
 <h2>Purpose</h2>
-<p>
-This file implements the bump-detection task. It watches the left and right front snap-action switches and sets the bump-event Share when a new press is detected.
-</p>
+<p>Offline utility script used to generate observer matrices from a continuous-time model.</p>
 <h2>Main Role</h2>
 <p>
-It acts as the robot’s collision event detector and helps enforce safe stopping and wall-interaction logic.
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
 </p>
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Read the left and right bump-switch input pins</li>
-<li>Use edge detection so only new presses trigger an event</li>
-<li>Set the bump-event Share when contact occurs</li>
-<li>Support collision-driven transitions in the course state machine</li>
-</ul>
 <h2>Why This File Matters</h2>
 <p>
-This file provides a simple but robust event signal used by the course logic and safety behavior. It is especially important during wall approach and collision response.
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
 </p>
-<p><a href="../task_bump.py" target="_blank">Open raw task_bump.py file</a></p>
+<p><a href="../make_observer_matrices.py" target="_blank">Open raw make_observer_matrices.py file</a></p>
 
 </div>
 </div>

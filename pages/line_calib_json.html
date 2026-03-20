@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>line_calib.json Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,34 +84,17 @@ background:#eef2f5;
 <h1>line_calib.json</h1>
 
 <h2>Purpose</h2>
-<p>This file stores the saved white and black calibration values for the line sensor array.</p>
-
+<p>Stores saved white and black calibration arrays for the reflectance sensor system.</p>
 <h2>Main Role</h2>
-<p>It allows the robot to load reflectance calibration values at startup instead of recalibrating every time.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Store white-reference sensor values</li>
-<li>Store black-reference sensor values</li>
-<li>Support startup normalization in main.py and line_sensor.py</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>white</code></td><td>Array of white-surface calibration values</td></tr>
-<tr><td><code>black</code></td><td>Array of black-surface calibration values</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>{&quot;white&quot;: [...], &quot;black&quot;: [...]}</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because calibration consistency is a major factor in reliable line following.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../line_calib.json" target="_blank">Open raw line_calib.json file</a></p>
+
 </div>
 </div>
 </body>

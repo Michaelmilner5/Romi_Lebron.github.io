@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_line.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,50 +84,64 @@ background:#eef2f5;
 <h1>task_line.py</h1>
 
 <h2>Purpose</h2>
-<p>This file implements the line-following controller using centroid-based reflectance sensing and steering correction.</p>
-
+<p>
+This file implements the line-following controller. It reads the reflectance sensor array, estimates line position using a centroid-based method, filters and bounds the result, then generates left and right wheel velocity commands to keep the robot centered on the track.
+</p>
 <h2>Main Role</h2>
-<p>task_line.py turns line-sensor measurements into left and right wheel commands so the robot can follow the printed path smoothly.</p>
-
+<p>
+This file is the robot’s main path-tracking controller whenever line-follow mode is enabled. It turns raw reflectance readings into steering behavior.
+</p>
 <h2>Key Responsibilities</h2>
 <ul>
-<li>Read normalized reflectance data from the line sensor array</li>
-<li>Estimate line position using a centroid-style method</li>
-<li>Apply filtering and confidence checks to the line-position estimate</li>
-<li>Compute steering correction using PID-style logic</li>
-<li>Clamp the steering command to prevent unrealistic wheel commands</li>
-<li>Write wheel-command Shares used by the motor tasks</li>
+<li>Read normalized reflectance sensor values</li>
+<li>Compute line position using a weighted centroid</li>
+<li>Apply confidence checks to avoid reacting to weak or noisy signals</li>
+<li>Filter the position estimate and apply a deadband</li>
+<li>Compute steering correction using proportional, integral, and derivative action</li>
+<li>Clamp the steering effort to a maximum magnitude</li>
+<li>Write left and right wheel velocity commands to Shares</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>sens</code></td><td>LineSensorArray object used to read the sensors</td></tr>
-<tr><td><code>v_base</code></td><td>Base forward-speed Share</td></tr>
-<tr><td><code>vL_cmd / vR_cmd</code></td><td>Left and right wheel command Shares</td></tr>
-<tr><td><code>lfEnable</code></td><td>Boolean Share enabling or disabling line following</td></tr>
-<tr><td><code>Kp / Ki / Kd</code></td><td>Steering control gains</td></tr>
-<tr><td><code>u_max</code></td><td>Maximum steering command magnitude</td></tr>
-<tr><td><code>max_min / sum_min</code></td><td>Confidence thresholds for valid line detection</td></tr>
-<tr><td><code>oversample</code></td><td>Number of samples used when reading the sensors</td></tr>
-<tr><td><code>den_min</code></td><td>Minimum denominator used in centroid computation</td></tr>
-<tr><td><code>pos_alpha</code></td><td>Low-pass filter coefficient for line position</td></tr>
-<tr><td><code>pos_deadband</code></td><td>Deadband applied to very small position errors</td></tr>
-<tr><td><code>last_pos</code></td><td>Most recent valid line position estimate</td></tr>
+<tr><td><code>sens</code></td><td>Line sensor array object used to read reflectance values.</td></tr>
+<tr><td><code>v_base</code></td><td>Base forward speed Share.</td></tr>
+<tr><td><code>vL_cmd</code>, <code>vR_cmd</code></td><td>Left and right wheel velocity command Shares.</td></tr>
+<tr><td><code>lfEnable</code></td><td>Share that enables or disables line-follow control.</td></tr>
+<tr><td><code>Kp</code>, <code>Ki</code>, <code>Kd</code></td><td>Controller gains for steering correction.</td></tr>
+<tr><td><code>u_max</code></td><td>Maximum steering correction magnitude.</td></tr>
+<tr><td><code>max_min</code>, <code>sum_min</code></td><td>Confidence thresholds used to reject weak line signals.</td></tr>
+<tr><td><code>pos_alpha</code></td><td>Low-pass filter coefficient for the line-position estimate.</td></tr>
+<tr><td><code>pos_deadband</code></td><td>Small deadband around zero position error.</td></tr>
+<tr><td><code>_last_valid_pos</code></td><td>Most recent valid line position, used when the signal weakens.</td></tr>
 </table>
-
+<h2>Important Methods / Behavior</h2>
+<table>
+<tr><th>Method / Logic</th><th>Description</th></tr>
+<tr><td><code>_reset_pid()</code></td><td>Resets internal controller state when line-follow mode is disabled.</td></tr>
+<tr><td>Centroid estimation</td><td>Computes an effective line position from the weighted sensor readings.</td></tr>
+<tr><td>Weak-signal handling</td><td>Prevents the robot from immediately spinning when the line signal becomes unclear.</td></tr>
+<tr><td>Wheel-command output</td><td>Uses the steering correction to adjust left and right speed commands around the base speed.</td></tr>
+</table>
 <details>
-<summary>Click to view representative logic</summary>
+<summary>Click to view representative control behavior</summary>
 <pre><code>if not self.lfEnable.get():
     self._reset_pid()
     yield self._state
     continue</code></pre>
 </details>
-
+<details>
+<summary>Click to view engineering notes</summary>
+<p>
+One of the strongest parts of this file is its weak-line handling. Instead of assuming the sensor signal is always perfect, the controller includes thresholds, filtering, and hold-last-valid logic so the robot behaves more gracefully when the line momentarily becomes less clear.
+</p>
+</details>
 <h2>Why This File Matters</h2>
-<p>This file is the core of the robot’s path-tracking behavior. It is what allows the robot to follow the course instead of simply driving with fixed commands.</p>
-
+<p>
+This file is what allows the robot to follow the printed track smoothly rather than simply reacting to a threshold crossing. It is a large part of why the robot appears controlled instead of jerky.
+</p>
 <p><a href="../task_line.py" target="_blank">Open raw task_line.py file</a></p>
+
 </div>
 </div>
 </body>

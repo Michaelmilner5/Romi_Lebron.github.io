@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>observer_matrices.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,36 +84,17 @@ background:#eef2f5;
 <h1>observer_matrices.py</h1>
 
 <h2>Purpose</h2>
-<p>This file stores the discrete-time observer matrices and sample time used by the estimator.</p>
-
+<p>Stores the discrete-time observer matrices and sample time used by the state estimator.</p>
 <h2>Main Role</h2>
-<p>It represents the mathematical model used by the observer task.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Define the sample time</li>
-<li>Store the Ad state matrix</li>
-<li>Store the Bd input matrix derived from the physical model</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>Ts</code></td><td>Discrete sample time</td></tr>
-<tr><td><code>Ad</code></td><td>Discrete state matrix</td></tr>
-<tr><td><code>Bd</code></td><td>Discrete input matrix including control and measurement channels</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>Ts = 0.02
-Ad = np.array([...])</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because it directly connects the estimator implementation to the robot’s modeled dynamics.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../observer_matrices.py" target="_blank">Open raw observer_matrices.py file</a></p>
+
 </div>
 </div>
 </body>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_motor.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,48 +84,67 @@ background:#eef2f5;
 <h1>task_motor.py</h1>
 
 <h2>Purpose</h2>
-<p>This file implements the motor-control task for one wheel using encoder feedback and PI velocity control.</p>
-
+<p>
+This file implements the motor-control task for a single wheel. It combines encoder updates, PI velocity control, optional logging, and publication of observer-related signals such as motor voltage and wheel displacement in meters.
+</p>
 <h2>Main Role</h2>
-<p>task_motor.py is responsible for low-level closed-loop wheel control. It regulates wheel motion, publishes displacement and voltage information, and supports logging.</p>
-
+<p>
+The task provides low-level closed-loop actuation for one wheel. Two instances of this task are created in <code>main.py</code>, one for the left motor and one for the right motor. This is what makes commanded wheel speeds repeatable and robust to disturbances such as battery variation or friction changes.
+</p>
 <h2>Key Responsibilities</h2>
 <ul>
 <li>Update encoder position and velocity</li>
-<li>Compute PI control effort from the velocity error</li>
+<li>Regulate wheel speed with PI control</li>
 <li>Send effort commands to the motor driver</li>
-<li>Publish wheel displacement in meters for the observer</li>
-<li>Publish applied motor voltage for the observer</li>
-<li>Support logging queues for debugging and analysis</li>
+<li>Publish motor voltage to the observer</li>
+<li>Publish wheel displacement in meters to the observer</li>
+<li>Log velocity, time, and effort when requested</li>
+<li>Auto-detect encoder sign so forward motion is positive</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>_mot</code></td><td>Motor driver object for one wheel</td></tr>
-<tr><td><code>_enc</code></td><td>Encoder object for one wheel</td></tr>
-<tr><td><code>_goFlag</code></td><td>Boolean Share enabling active motor control</td></tr>
-<tr><td><code>_vRef</code></td><td>Share containing the desired wheel velocity</td></tr>
-<tr><td><code>_Kp / _Ki</code></td><td>PI gain Shares</td></tr>
-<tr><td><code>_dataValues / _timeValues / _effortValues</code></td><td>Queues for logging measured velocity, time, and effort</td></tr>
-<tr><td><code>_u_share</code></td><td>Share used to publish the applied motor voltage</td></tr>
-<tr><td><code>_s_share</code></td><td>Share used to publish wheel displacement in meters</td></tr>
-<tr><td><code>_v_filt</code></td><td>Filtered wheel velocity</td></tr>
-<tr><td><code>_e_int</code></td><td>Accumulated integral error</td></tr>
-<tr><td><code>_m_per_count</code></td><td>Conversion factor from encoder counts to meters</td></tr>
-<tr><td><code>_sign</code></td><td>Direction convention ensuring forward motion is positive</td></tr>
+<tr><td><code>_mot</code></td><td>Motor-driver object used to apply PWM effort to the wheel.</td></tr>
+<tr><td><code>_enc</code></td><td>Encoder object used to measure wheel position and velocity.</td></tr>
+<tr><td><code>_goFlag</code></td><td>Share that enables or disables active motor control.</td></tr>
+<tr><td><code>_vRef</code></td><td>Share containing the desired wheel velocity.</td></tr>
+<tr><td><code>_Kp</code>, <code>_Ki</code></td><td>PI controller gain Shares.</td></tr>
+<tr><td><code>_dataValues</code>, <code>_timeValues</code>, <code>_effortValues</code></td><td>Queues used for logging speed, timestamp, and control effort.</td></tr>
+<tr><td><code>_u_share</code></td><td>Share used to publish motor voltage for the observer.</td></tr>
+<tr><td><code>_s_share</code></td><td>Share used to publish wheel displacement in meters.</td></tr>
+<tr><td><code>_Vbatt</code></td><td>Battery voltage scale factor used to convert effort percentage to volts.</td></tr>
+<tr><td><code>_R</code></td><td>Wheel radius in meters.</td></tr>
+<tr><td><code>_CPR</code></td><td>Counts per revolution used for displacement conversion.</td></tr>
+<tr><td><code>_m_per_count</code></td><td>Distance-per-count conversion factor.</td></tr>
+<tr><td><code>_sign</code></td><td>Direction sign chosen so forward motion is treated as positive.</td></tr>
+<tr><td><code>_v_filt</code></td><td>Filtered velocity state used in control.</td></tr>
+<tr><td><code>_e_int</code></td><td>Integral-of-error accumulator for PI control.</td></tr>
 </table>
-
+<h2>Important Methods</h2>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>_sat()</code></td><td>Saturates the control effort to a bounded range.</td></tr>
+<tr><td><code>_clear_queue()</code></td><td>Clears queue contents before new logging sessions.</td></tr>
+<tr><td><code>_update_encoder_and_publish_s()</code></td><td>Always updates encoder position and publishes wheel displacement, even when the motor-go flag is false. This is important for observer behavior when the robot is moved by hand.</td></tr>
+<tr><td><code>run()</code></td><td>Main generator task implementing initialization, wait, and run behavior.</td></tr>
+</table>
 <details>
-<summary>Click to view representative logic</summary>
+<summary>Click to view representative PI-control concept</summary>
 <pre><code>error = vRef - velocity
 effort = Kp * error + Ki * integral_error</code></pre>
 </details>
-
+<details>
+<summary>Click to view engineering notes</summary>
+<p>
+A subtle but very good design choice in this file is that encoder updates continue even when the motor is disabled. That means displacement Shares still reflect the physical motion of the robot, which is valuable for state estimation and debugging.
+</p>
+</details>
 <h2>Why This File Matters</h2>
-<p>This file matters because it closes the loop around each motor. That is a major reason the robot is repeatable and controllable instead of behaving like an open-loop toy.</p>
-
+<p>
+This file closes the loop around each wheel. Without it, the robot would behave much more like an open-loop platform and would be less stable and repeatable during line following, turns, and obstacle-course maneuvers.
+</p>
 <p><a href="../task_motor.py" target="_blank">Open raw task_motor.py file</a></p>
+
 </div>
 </div>
 </body>

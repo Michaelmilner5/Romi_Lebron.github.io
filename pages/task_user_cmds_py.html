@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_user_cmds.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,39 +84,17 @@ background:#eef2f5;
 <h1>task_user_cmds.py</h1>
 
 <h2>Purpose</h2>
-<p>This file contains the helper command logic used by the serial user interface.</p>
-
+<p>Defines helper command methods used by the serial user interface, including help text, tuning commands, calibration triggers, and diagnostic printouts.</p>
 <h2>Main Role</h2>
-<p>It keeps the command parser and helper routines separate from the main user task so the code stays organized.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Print the help menu</li>
-<li>Parse numbers for gains and speed</li>
-<li>Stop the robot</li>
-<li>Trigger line-sensor calibration</li>
-<li>Display IMU and observer data</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>UI_prompt</code></td><td>Prompt string shown to the user</td></tr>
-<tr><td><code>_ser</code></td><td>Serial interface used for command I/O</td></tr>
-<tr><td><code>_buf</code></td><td>Buffered incoming character if used</td></tr>
-<tr><td><code>_num_str</code></td><td>Temporary number-entry string</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>def _print_help(self):
-    self._write_ui(_get_help_menu().encode())</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because it keeps the interface logic modular and easier to maintain.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../task_user_cmds.py" target="_blank">Open raw task_user_cmds.py file</a></p>
+
 </div>
 </div>
 </body>

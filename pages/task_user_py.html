@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_user.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,45 +84,51 @@ background:#eef2f5;
 <h1>task_user.py</h1>
 
 <h2>Purpose</h2>
-<p>This file implements the USB serial user interface task.</p>
-
+<p>
+This file implements the serial user-interface task. It inherits command-handling behavior from <code>UserCmds</code> and provides the live runtime interface used for tuning gains, calibrating sensors, printing diagnostic values, starting or stopping line-follow mode, and controlling estimator streaming.
+</p>
 <h2>Main Role</h2>
-<p>task_user.py gives the user live access to gains, speed settings, calibration routines, sensor printouts, and mode control.</p>
-
+<p>
+This task is the main human-facing interface to the robot. It makes the robot much easier to test and tune because many settings can be changed at runtime rather than by repeatedly editing code.
+</p>
 <h2>Key Responsibilities</h2>
 <ul>
-<li>Read serial input</li>
-<li>Dispatch commands to helper methods</li>
-<li>Support gain entry and speed updates</li>
-<li>Trigger calibration routines</li>
-<li>Display sensor and estimator information</li>
-<li>Control line-follow and course modes</li>
+<li>Open and manage the USB serial interface</li>
+<li>Display help text and prompts</li>
+<li>Read characters entered by the user</li>
+<li>Dispatch commands through the command helper layer</li>
+<li>Collect and display logged data when requested</li>
+<li>Expose line-follow, IMU, estimator, and control-related commands</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>_ser</code></td><td>USB_VCP serial interface</td></tr>
-<tr><td><code>_Kp / _Ki</code></td><td>Gain Shares</td></tr>
-<tr><td><code>_vBase</code></td><td>Base-speed Share</td></tr>
-<tr><td><code>_lfEnable</code></td><td>Line-follow enable Share</td></tr>
-<tr><td><code>_estStreamEnable</code></td><td>Estimator-stream enable Share</td></tr>
-<tr><td><code>_courseEnable</code></td><td>Course-enable Share</td></tr>
-<tr><td><code>_bumpEvent</code></td><td>Bump-event Share</td></tr>
-<tr><td><code>_sens</code></td><td>Line sensor object</td></tr>
-<tr><td><code>_imu</code></td><td>IMU object</td></tr>
-<tr><td><code>_psi_hat / _wL_hat / _wR_hat</code></td><td>Observer-state Shares</td></tr>
+<tr><td><code>_ser</code></td><td>USB serial interface object used for user interaction.</td></tr>
+<tr><td><code>_leftMotorGo</code>, <code>_rightMotorGo</code></td><td>Shares used to control motor enable from the UI.</td></tr>
+<tr><td><code>_Kp</code>, <code>_Ki</code></td><td>Gain Shares edited through the UI.</td></tr>
+<tr><td><code>_vBase</code></td><td>Line-follow base speed Share.</td></tr>
+<tr><td><code>_lfEnable</code></td><td>Share used to toggle line-follow mode.</td></tr>
+<tr><td><code>_estStreamEnable</code></td><td>Share used to enable observer streaming.</td></tr>
+<tr><td><code>_sens</code></td><td>Line sensor object used for calibration and printout commands.</td></tr>
+<tr><td><code>_imu</code></td><td>IMU object used for calibration and IMU printout commands.</td></tr>
+<tr><td><code>_courseEnable</code></td><td>Share used to start or stop the full course task.</td></tr>
+<tr><td><code>_buf</code>, <code>_mode</code>, <code>_num_str</code></td><td>Internal state used while collecting typed user input.</td></tr>
 </table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code># User task inherits command helpers from UserCmds and services serial input in states</code></pre>
-</details>
-
+<h2>Task States</h2>
+<table>
+<tr><th>State</th><th>Description</th></tr>
+<tr><td><code>S0_INIT</code></td><td>Prints the help menu and prompt at startup.</td></tr>
+<tr><td><code>S1_CMD</code></td><td>Waits for user commands.</td></tr>
+<tr><td><code>S2_GET</code></td><td>Collects multi-character numeric input.</td></tr>
+<tr><td><code>S3_COL</code></td><td>Waits until log queues are ready to dump data.</td></tr>
+<tr><td><code>S4_DIS</code></td><td>Displays buffered data over the serial interface.</td></tr>
+</table>
 <h2>Why This File Matters</h2>
-<p>This file matters because it makes the robot practical to tune and debug without repeatedly editing the code.</p>
-
+<p>
+This file made the full development process dramatically easier by turning many tuning and diagnostic tasks into serial commands rather than manual source edits. It is one of the most practical files in the project.
+</p>
 <p><a href="../task_user.py" target="_blank">Open raw task_user.py file</a></p>
+
 </div>
 </div>
 </body>

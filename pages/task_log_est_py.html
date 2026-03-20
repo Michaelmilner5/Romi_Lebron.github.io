@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_log_est.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,35 +84,17 @@ background:#eef2f5;
 <h1>task_log_est.py</h1>
 
 <h2>Purpose</h2>
-<p>This file logs observer estimates and derives x-y position by dead reckoning.</p>
-
+<p>Logs observer estimates over time and can support offline analysis of estimated robot motion.</p>
 <h2>Main Role</h2>
-<p>It is used for offline analysis and validation of the observer.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Log estimated forward position, heading, and wheel speeds</li>
-<li>Compute x-y position from estimated motion</li>
-<li>Store time histories in queues</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>s_hat / psi_hat / wL_hat / wR_hat</code></td><td>Estimated-state inputs</td></tr>
-<tr><td><code>x / y</code></td><td>Integrated planar position estimate</td></tr>
-<tr><td><code>queues</code></td><td>Logging buffers for time history</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code># Logs estimated states and integrates path for offline analysis</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because it helps validate estimation performance beyond the live run.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../task_log_est.py" target="_blank">Open raw task_log_est.py file</a></p>
+
 </div>
 </div>
 </body>

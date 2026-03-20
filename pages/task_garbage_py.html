@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_garbage.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,32 +84,17 @@ background:#eef2f5;
 <h1>task_garbage.py</h1>
 
 <h2>Purpose</h2>
-<p>This file periodically runs garbage collection in the background.</p>
-
+<p>Runs background garbage collection in a generator task so memory usage stays manageable during operation.</p>
 <h2>Main Role</h2>
-<p>It helps manage MicroPython memory usage during runtime.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Call the garbage collector inside a generator task</li>
-<li>Run at a low priority so it does not interfere with core control loops</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>garbage</code></td><td>Generator function scheduled by the cooperative scheduler</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code># periodic gc.collect() task</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because memory management is a real concern on microcontrollers running multiple tasks.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../task_garbage.py" target="_blank">Open raw task_garbage.py file</a></p>
+
 </div>
 </div>
 </body>

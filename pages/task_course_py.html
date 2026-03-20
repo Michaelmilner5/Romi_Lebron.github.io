@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>task_course.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,51 +84,90 @@ background:#eef2f5;
 <h1>task_course.py</h1>
 
 <h2>Purpose</h2>
-<p>This file implements the high-level finite state machine for the obstacle course.</p>
-
+<p>
+This file implements the high-level finite state machine for the full obstacle course. It contains the ordered sequence of line-following segments, straight drives, turning maneuvers, wall contact, backup behavior, cup interaction, and the final end-of-course actions. In the full software stack, this is the file that decides <i>what the robot should be doing right now</i>.
+</p>
 <h2>Main Role</h2>
-<p>task_course.py coordinates the full autonomous behavior of the robot. It decides when the robot should line-follow, drive straight, turn, back up, or stop based on course progress and sensor events.</p>
-
+<p>
+While lower-level files handle actuation, sensing, and estimation, <code>task_course.py</code> coordinates the robot’s overall behavior. It enables or disables line following, changes controller gains and base speeds for different phases, commands direct wheel velocities for special maneuvers, and uses measured wheel travel to determine when a segment has been completed.
+</p>
+<h2>State Machine Overview</h2>
+<p>
+The file defines a large number of named states, beginning with initialization and idle modes and continuing through the entire obstacle-course routine. These include fast and slow line-following sections, right and left turns, straight segments, wall interaction, cup interaction, and final approach states.
+</p>
+<details>
+<summary>Click to view key FSM groups</summary>
+<ul>
+<li><b>Startup and idle:</b> <code>S0_INIT</code>, <code>S1_IDLE</code></li>
+<li><b>Early line-follow and turning:</b> <code>S2_FAST_LINE</code>, <code>S3_SLOW_LINE</code>, <code>S4_SMALL_RIGHT</code>, <code>S5_STRAIGHT</code>, <code>S6_TURN_RIGHT</code></li>
+<li><b>Wall interaction:</b> <code>S8_DRIVE_TO_WALL</code>, <code>S9_BACK_UP</code>, <code>S10_TURN_LEFT</code>, <code>S11_FORWARD_AFTER_TURN</code>, <code>S12_RESUME_LINE</code></li>
+<li><b>Final approach and cup path:</b> <code>S17_FAST_FINAL_LINE_1</code> through <code>S31_END_STRAIGHT</code></li>
+<li><b>Mid-course correction states:</b> <code>S111_MID_LEFT</code> through <code>S114_MID_RIGHT</code></li>
+</ul>
+</details>
 <h2>Key Responsibilities</h2>
 <ul>
-<li>Define named states for the full course sequence</li>
-<li>Enable and disable line-follow mode at the right times</li>
-<li>Command direct wheel velocities for straight motion, turns, and backup maneuvers</li>
-<li>Change gains and base speed depending on the phase of the course</li>
-<li>Use measured wheel travel to trigger state transitions</li>
-<li>Monitor the course-enable and bump-event Shares and respond safely</li>
+<li>Define the ordered autonomous sequence of the obstacle course</li>
+<li>Apply different gains and base speeds for different sections of the course</li>
+<li>Enable and disable line-follow mode at the correct times</li>
+<li>Command direct left and right wheel velocities during turns, backups, and straight segments</li>
+<li>Store wheel-travel references at the start of each segment and compare them against current measured travel</li>
+<li>React safely when the course-enable flag is turned off or when a bump event occurs</li>
 </ul>
-
 <h2>Important Attributes / Shares / Variables</h2>
 <table>
 <tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>_state</code></td><td>Current finite-state-machine state</td></tr>
-<tr><td><code>_courseEnable</code></td><td>Share that enables or disables the full course</td></tr>
-<tr><td><code>_bumpEvent</code></td><td>Share indicating that a bump event has occurred</td></tr>
-<tr><td><code>_leftMotorGo / _rightMotorGo</code></td><td>Motor enable Shares</td></tr>
-<tr><td><code>_velL / _velR</code></td><td>Direct left and right velocity command Shares</td></tr>
-<tr><td><code>_lfEnable</code></td><td>Line-follow enable Share</td></tr>
-<tr><td><code>_vBase</code></td><td>Base line-follow speed Share</td></tr>
-<tr><td><code>_Kp / _Ki</code></td><td>Gain Shares adjusted during different phases</td></tr>
-<tr><td><code>_seg_sL0 / _seg_sR0</code></td><td>Stored wheel displacement at the start of a segment</td></tr>
-<tr><td><code>_post_cup</code></td><td>Internal flag for cup-related behavior if used</td></tr>
+<tr><td><code>_state</code></td><td>Current finite-state-machine state.</td></tr>
+<tr><td><code>_courseEnable</code></td><td>Master enable Share for the autonomous routine. If false, the task forces the robot back to a stopped or idle condition.</td></tr>
+<tr><td><code>_bumpEvent</code></td><td>Share indicating collision contact from the bump task. This is cleared when restarting certain behaviors.</td></tr>
+<tr><td><code>_leftMotorGo</code>, <code>_rightMotorGo</code></td><td>Shares used to enable the left and right motor tasks.</td></tr>
+<tr><td><code>_lfEnable</code></td><td>Share that enables or disables line-follow mode.</td></tr>
+<tr><td><code>_velL</code>, <code>_velR</code></td><td>Direct wheel velocity command Shares used during non-line-follow segments.</td></tr>
+<tr><td><code>_vBase</code></td><td>Base speed Share used by the line-follow controller.</td></tr>
+<tr><td><code>_sL_meas</code>, <code>_sR_meas</code></td><td>Measured left and right wheel displacement Shares.</td></tr>
+<tr><td><code>_Kp</code>, <code>_Ki</code></td><td>Motor PI gain Shares that are updated for different sections of the course.</td></tr>
+<tr><td><code>_seg_sL0</code>, <code>_seg_sR0</code></td><td>Wheel displacement references recorded at the start of a segment, used to compute segment travel.</td></tr>
 </table>
-
+<h2>Important Internal Helper Methods</h2>
+<table>
+<tr><th>Method</th><th>Description</th></tr>
+<tr><td><code>_clear_bump_event()</code></td><td>Attempts to reset the bump-event Share so old contact events do not carry into a new course run.</td></tr>
+<tr><td><code>_stop()</code></td><td>Disables line-follow mode, disables both motors, zeros wheel commands, and disables the course.</td></tr>
+<tr><td><code>_apply_fast_settings()</code></td><td>Loads the fast line-follow PI gains and base speed into the shared variables.</td></tr>
+<tr><td><code>_apply_slow_settings()</code></td><td>Loads the slow line-follow PI gains and base speed into the shared variables.</td></tr>
+<tr><td><code>_mark_segment_start()</code></td><td>Captures the current left and right wheel displacement values as the reference for a new segment.</td></tr>
+<tr><td><code>_avg_forward_travel()</code></td><td>Returns average forward wheel travel relative to the marked segment start.</td></tr>
+<tr><td><code>_avg_backward_travel()</code></td><td>Returns average backward travel relative to the marked segment start.</td></tr>
+<tr><td><code>_avg_abs_wheel_travel()</code></td><td>Returns average absolute wheel travel, useful for turning segments where one wheel may move differently from the other.</td></tr>
+<tr><td><code>_start_fast_line()</code>, <code>_start_slow_line()</code></td><td>Configure and begin line-following segments.</td></tr>
+<tr><td><code>_start_small_right()</code>, <code>_start_turn_right()</code>, <code>_start_turn_left()</code></td><td>Configure direct wheel-speed commands for turning maneuvers.</td></tr>
+<tr><td><code>_start_drive_to_wall()</code>, <code>_start_back_up()</code>, <code>_start_forward_after_turn()</code></td><td>Configure straight or reverse motion segments outside of line-follow mode.</td></tr>
+</table>
 <details>
-<summary>Click to view representative logic</summary>
+<summary>Click to view representative transition logic</summary>
 <pre><code>elif self._state == S2_FAST_LINE:
     if not self._courseEnable.get():
         self._stop()
         self._clear_bump_event()
         self._state = S1_IDLE
         yield self._state
-        continue</code></pre>
+        continue
+    if self._avg_forward_travel() >= FAST_LINE_TRAVEL:
+        self._start_slow_line()
+        self._state = S3_SLOW_LINE</code></pre>
 </details>
-
+<details>
+<summary>Click to view engineering notes</summary>
+<p>
+The constants at the top of the file define both controller settings and travel thresholds. This means the file serves as both the behavior definition and the tuning hub for the course. The measured wheel displacements are used instead of open-loop time delays wherever possible, which improves repeatability.
+</p>
+</details>
 <h2>Why This File Matters</h2>
-<p>This file is one of the most important in the project because it gives the robot a complete behavior sequence instead of isolated motions. It is the clearest expression of the overall autonomy strategy.</p>
-
+<p>
+This file is the behavioral core of the robot. It is where the full autonomous routine is encoded. The line-follow controller, motor controllers, and observer can all work independently, but without this file the robot would not know when to transition from line following into turning, wall approach, cup interaction, or the final exit behavior.
+</p>
 <p><a href="../task_course.py" target="_blank">Open raw task_course.py file</a></p>
+
 </div>
 </div>
 </body>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>motor_driver.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,38 +84,17 @@ background:#eef2f5;
 <h1>motor_driver.py</h1>
 
 <h2>Purpose</h2>
-<p>This file defines the motor_driver class used to command the Romi motors.</p>
-
+<p>Defines the motor_driver class used to abstract PWM, direction, and sleep control for each motor.</p>
 <h2>Main Role</h2>
-<p>It abstracts direction, PWM, and enable control so higher-level tasks can request effort without managing pins directly.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Configure PWM, direction, and sleep pins</li>
-<li>Set signed motor effort</li>
-<li>Enable the driver</li>
-<li>Disable the driver</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>nSLP_pin</code></td><td>Sleep/enable pin for the motor driver</td></tr>
-<tr><td><code>DIR_pin</code></td><td>Direction pin</td></tr>
-<tr><td><code>PWM_chan</code></td><td>PWM channel used to command motor effort</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>def set_effort(self, effort):
-    if effort &gt; 0:
-        self.DIR_pin.low()</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because it is the hardware interface that turns computed effort into real wheel motion.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../motor_driver.py" target="_blank">Open raw motor_driver.py file</a></p>
+
 </div>
 </div>
 </body>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>line_sensor.py Documentation</title>
 <style>
+
 body{
 font-family: Arial, Helvetica, sans-serif;
 margin:0;
@@ -70,6 +71,10 @@ vertical-align:top;
 th{
 background:#eef2f5;
 }
+ul{
+padding-left:24px;
+}
+
 </style>
 </head>
 <body>
@@ -79,40 +84,17 @@ background:#eef2f5;
 <h1>line_sensor.py</h1>
 
 <h2>Purpose</h2>
-<p>This file defines the LineSensorArray class used for the reflectance sensor array.</p>
-
+<p>Defines the LineSensorArray class used to read, calibrate, normalize, and interpret the analog reflectance sensor array.</p>
 <h2>Main Role</h2>
-<p>It converts raw ADC values into usable reflectance information for line following.</p>
-
-<h2>Key Responsibilities</h2>
-<ul>
-<li>Create ADC objects for all sensor channels</li>
-<li>Control the emitter pin</li>
-<li>Read raw reflectance values</li>
-<li>Support ambient cancellation</li>
-<li>Store and apply white/black calibration</li>
-<li>Compute normalized readings</li>
-</ul>
-
-<h2>Important Attributes / Shares / Variables</h2>
-<table>
-<tr><th>Name</th><th>Description</th></tr>
-<tr><td><code>adcs</code></td><td>ADC objects for the sensor channels</td></tr>
-<tr><td><code>emit</code></td><td>Emitter control pin</td></tr>
-<tr><td><code>weights</code></td><td>Sensor weights used for line-position estimation</td></tr>
-<tr><td><code>invert</code></td><td>Whether normalized readings are inverted</td></tr>
-<tr><td><code>white / black</code></td><td>Calibration arrays loaded or updated at runtime</td></tr>
-</table>
-
-<details>
-<summary>Click to view representative logic</summary>
-<pre><code>def read_raw(self, oversample=1, emit=True, ambient_cancel=False):</code></pre>
-</details>
-
+<p>
+This file supports the overall robot system by providing one focused piece of functionality. It is not necessarily the main behavior coordinator, but it contributes to the system’s organization, reproducibility, and maintainability.
+</p>
 <h2>Why This File Matters</h2>
-<p>This file matters because the quality of line-following depends on turning raw sensor readings into stable, calibrated values.</p>
-
+<p>
+Although this file is more specialized than the major runtime tasks, it still plays an important role in making the full project complete, understandable, and easier to test or maintain.
+</p>
 <p><a href="../line_sensor.py" target="_blank">Open raw line_sensor.py file</a></p>
+
 </div>
 </div>
 </body>
