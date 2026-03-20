@@ -274,6 +274,7 @@ Project portfolio by Tyler Lum and Michael Milner documenting the design, implem
 <a href="#overview">Overview</a>
 <a href="#objectives">Objectives</a>
 <a href="#parameters">Parameters</a>
+<a href="#build">Build Guide</a>
 <a href="#wiring">Wiring</a>
 <a href="#design">Design</a>
 <a href="#implementation">Implementation</a>
@@ -628,6 +629,74 @@ This table was included so that the physical robot and its software pin assignme
 
 </div>
 </section>
+
+<section id="build">
+<h2>Build Guide</h2>
+<div class="card">
+
+<p>
+This section provides a step-by-step guide for assembling the Romi robot, including mechanical structure, electronics integration, and sensor installation. The build sequence is designed to avoid rework and ensure proper cable routing and component placement.
+</p>
+
+<h3>1. Gather Materials and Tools</h3>
+<p>
+Before beginning assembly, verify that all required hardware components, cables, and tools are available. This includes standoffs, screws, the Romi chassis, Nucleo board, Shoe of Brian, IMU, and pre-crimped jumper wires. Having all components ready prevents interruptions during assembly.
+</p>
+
+<h3>2. Install Chassis Standoffs</h3>
+<p>
+Attach four 30 mm standoffs to the Romi chassis using nylon lock nuts. These standoffs form the vertical support for the electronics stack. Ensure they are aligned properly in the mounting slots and do not overtighten, as the plastic chassis can be damaged.
+</p>
+
+<h3>3. Prepare and Route Cables</h3>
+<p>
+Create and organize the required cable assemblies, including power, motor, and encoder cables. Follow proper color conventions (black for ground, red for power) and confirm pin orientations before connecting anything. Route the cables through the center of the chassis to simplify later connections.
+</p>
+
+<h3>4. Install Adapter Plate</h3>
+<p>
+Mount the Romi-to-Shoe adapter plate onto the standoffs using M2.5 screws. Feed motor and encoder wires through the center cutout to keep wiring clean and organized.
+</p>
+
+<h3>5. Mount Shoe of Brian and Nucleo</h3>
+<p>
+Install four 8 mm standoffs onto the adapter plate, then attach the Shoe of Brian using screws and nylon washers. Afterward, carefully mount the Nucleo L476RG onto the Shoe of Brian, ensuring proper alignment of the header pins.
+</p>
+
+<h3>6. Connect Power and Signals</h3>
+<p>
+Connect all cables from the Romi power distribution board to the Nucleo. This includes power, motor control signals, and encoder inputs. Double-check all wiring before applying power, as incorrect connections can damage the microcontroller.
+</p>
+
+<h3>7. Install IMU</h3>
+<p>
+Mount the BNO055 IMU using standoffs and screws on the Romi chassis. Position it to avoid interference with other components and ensure stable orientation for accurate heading and angular velocity measurements.
+</p>
+
+<h3>8. Install Line Sensor</h3>
+<p>
+Mount the Pololu QTRX-A reflectance sensor array at the front of the robot using four 1/4" 2-56 MF standoffs, 2-56 screws, and nuts. This sensor detects the line by measuring reflected infrared light and enables real-time steering corrections.
+</p>
+
+<h3>9. Install Bump Sensors</h3>
+<p>
+Mount two snap-action bump switches with 18.5 mm lever arms at the front of the robot, positioned in front of the line sensor. These were secured using hot glue to the frame, providing a simple and effective method for detecting wall contact during the obstacle course.
+</p>
+
+<h3>10. Final Checks</h3>
+<ul>
+<li>Verify all wiring connections and polarity</li>
+<li>Ensure no loose cables interfere with wheels</li>
+<li>Confirm sensors are securely mounted</li>
+<li>Only power on the system after all checks are complete</li>
+</ul>
+
+<p>
+Following this build sequence ensures a clean, organized, and functional robot assembly that supports reliable operation during testing and competition.
+</p>
+
+</div>
+</section>  
   
 <section id="design">
 <h2>Mechanical &amp; Electrical Design</h2>
