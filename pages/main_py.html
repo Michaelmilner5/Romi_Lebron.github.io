@@ -70,6 +70,11 @@ text-align:left;
 th{
 background:#eef2f5;
 }
+.section-divider{
+border:none;
+border-top:1px solid #dbe4ea;
+margin:28px 0;
+}
 </style>
 </head>
 
@@ -92,14 +97,14 @@ This file initializes the complete robot system and acts as the integration laye
 <code>main.py</code> connects all modules into one functioning robot. It determines how data flows between tasks and how frequently each task executes.
 </p>
 
----
+<hr class="section-divider">
 
 <h2>System Architecture Overview</h2>
 <p>
 The system is built on a cooperative multitasking framework. Each subsystem runs as a task and communicates through Shares. The scheduler repeatedly executes tasks based on priority and timing.
 </p>
 
----
+<hr class="section-divider">
 
 <h2>Hardware Initialization</h2>
 
@@ -117,7 +122,7 @@ The system is built on a cooperative multitasking framework. Each subsystem runs
 
 </details>
 
----
+<hr class="section-divider">
 
 <h2>Shared Variables (Core Communication Layer)</h2>
 
@@ -168,7 +173,7 @@ Shares allow safe communication between tasks. Each Share represents a piece of 
 
 </details>
 
----
+<hr class="section-divider">
 
 <h2>Task Breakdown</h2>
 
@@ -189,7 +194,7 @@ Shares allow safe communication between tasks. Each Share represents a piece of 
 
 </details>
 
----
+<hr class="section-divider">
 
 <h2>Scheduler Configuration</h2>
 
@@ -210,7 +215,7 @@ task_list.append(Task(garbage, priority=0, period=100))
 
 </details>
 
----
+<hr class="section-divider">
 
 <h2>Interactive Behavior</h2>
 
@@ -226,21 +231,21 @@ The system is interactive through:
 <li>Live estimator streaming</li>
 </ul>
 
----
+<hr class="section-divider">
 
 <h2>Why This File Matters</h2>
 <p>
 This file defines how the robot actually operates as a system. It ensures all subsystems communicate correctly, run at the right speed, and behave safely. Without it, the robot would not function as an integrated platform.
 </p>
 
----
+<hr class="section-divider">
 
 <h2>Engineering Insight</h2>
 <p>
 This file demonstrates system-level thinking. It shows how embedded systems combine sensing, control, estimation, and event handling into one cohesive architecture.
 </p>
 
----
+<hr class="section-divider">
 
 <p><a href="../main.py" target="_blank">Open raw main.py file</a></p>
 
