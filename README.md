@@ -99,9 +99,3 @@ https://michaelmilner5.github.io/Romi_Lebron.github.io/
 ## Authors
 - Tyler Lum  
 - Michael Milner  
-
----
-
-## Notes
-This repository focuses on implementation and system structure.  
-Detailed explanations, diagrams, and analysis are provided on the project website.
